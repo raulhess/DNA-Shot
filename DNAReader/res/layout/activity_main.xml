@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/app_white"
+    android:orientation="vertical"
+    tools:context="com.dnareader.activities.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDD"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="fill_parent"
+            android:background="@color/app_blue" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/menu_pictures_title"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_light_gray"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/menu_take_picture"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:clickable="true"
+            android:drawableBottom="@android:drawable/ic_menu_camera"
+            android:gravity="center"
+            android:onClick="goTakePicture"
+            android:padding="26dp"
+            android:text="@string/menu_take_picture"
+            android:textColor="@drawable/main_text_color"
+            android:textSize="19sp" />
+
+        <TextView
+            android:id="@+id/menu_upload_picture"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:clickable="true"
+            android:drawableBottom="@android:drawable/ic_menu_upload"
+            android:gravity="center"
+            android:onClick="goUploadPicture"
+            android:padding="26dp"
+            android:text="@string/menu_upload_picture"
+            android:textColor="@drawable/main_text_color"
+            android:textSize="19sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDD"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="fill_parent"
+            android:background="@color/app_blue" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/menu_results_title"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/menu_result_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </ListView>
+    </FrameLayout>
+
+</LinearLayout>
