@@ -28,9 +28,6 @@ public class ResultActivity extends DrawerActivity {
 			try {
 				setTitle(getResources().getString(R.string.result_id)
 						+ bundle.getString("id"));
-//				img.setImageBitmap(BitmapFactory.decodeByteArray(
-//						bundle.getByteArray("img"), 0,
-//						bundle.getByteArray("img").length));
 				time.setText(getResources().getString(R.string.result_date) + bundle.getString("date"));
 				results.setText(bundle.getString("content"));
 			} catch (Exception e) {

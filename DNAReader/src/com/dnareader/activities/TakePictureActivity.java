@@ -14,7 +14,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,14 +49,13 @@ public class TakePictureActivity extends DrawerActivity {
 			} else {
 				r.setId("1000");
 			}
-			r.setNotSent();
-			r.setImage(getThumbnail(data));
+			r.setState(Result.UNPROCESSED);
+			r.setThumbnail(getThumbnail(data));
+			r.setImage(data);
 			r.setChecked(false);
 			list.add(0,r);
 			ResultManager.saveResult(getApplicationContext(),list);
-			Log.d(MainActivity.TAG, "Picture captured!");
-			String base64Image = Base64.encodeToString(data, Base64.URL_SAFE);
-			Log.d(MainActivity.TAG, base64Image);
+			Log.d(MainActivity.TAG, "Picture captured! " + list.size() );
 			pictureTaken();
 		}
 

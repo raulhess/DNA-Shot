@@ -28,7 +28,7 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		this.list = list;
 		
 		for(Result r : list){
-			imageList.add(BitmapFactory.decodeByteArray(r.getImage(), 0, r.getImage().length));
+			imageList.add(BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length));
 		}
 		
 	}
@@ -46,15 +46,15 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		status.setText("Status: " + context.getResources().getString(R.string.result_error));
 		cellView.setBackgroundColor(context.getResources().getColor(R.color.app_soft_red));
 		switch (list.get(position).getState()) {
-		case 0:
+		case Result.UNPROCESSED:
 			status.setText("Status: " + context.getResources().getString(R.string.result_not_sent));
 			cellView.setBackgroundColor(context.getResources().getColor(R.color.app_white));
 			break;
-		case 1:
+		case Result.OCR_PROCESSED:
 			status.setText("Status: " + context.getResources().getString(R.string.result_waiting));
 			cellView.setBackgroundColor(context.getResources().getColor(R.color.app_white));
 			break;
-		case 2:
+		case Result.DONE:
 			status.setText("Status: " + context.getResources().getString(R.string.result_done));
 			if(list.get(position).isChecked())
 				cellView.setBackgroundColor(context.getResources().getColor(R.color.app_soft_blue));

@@ -1,19 +1,12 @@
 package com.dnareader.activities;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -35,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dnareader.data.Result;
+import com.dnareader.processing.Ocr;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
 import com.dnareader.system.ResultsAdapter;
@@ -51,11 +45,10 @@ public class MainActivity extends DrawerActivity {
 	private TextView takePicture;
 	private TextView uploadPicture;
 
-	private List<Result> listResults = new ArrayList<Result>();
+	private List<Result> listResults;
 	private ListView results;
 	private ResultsAdapter adapter;
 
-	private List<CheckResultsTask> tasks = new ArrayList<MainActivity.CheckResultsTask>();
 	private Handler handler;
 	Runnable checkResultsLoop = new Runnable() {
 
@@ -64,42 +57,42 @@ public class MainActivity extends DrawerActivity {
 			Log.d(TAG, "Checking results");
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			Ocr ocr = new Ocr(getApplicationContext());		
 			if (networkInfo != null && networkInfo.isConnected()) {
 				try {
+					listResults = ResultManager.loadResults(getApplicationContext());
 					for (Result r : listResults) {
-						if (r.getState() == 0 || r.getState() == 1) {
-							// checks if there is already a task running for that id
-							boolean taskRunning = false;
-							for (CheckResultsTask t : tasks) {
-								if (t.getId().equals(r.getId())) {
-									taskRunning = true;
-								}
-							}
-							if (!taskRunning) {
-								CheckResultsTask newTask = new CheckResultsTask(
-										getApplicationContext(), r.getId());
-								newTask.execute(new URL(
-										"http://md5.jsontest.com/?text="
-												+ r.getId()));
-								tasks.add(newTask);
-								Log.d(TAG,
-										"Sent search request for result with ID: "
-												+ r.getId());
-								r.setWaiting();
-								ResultManager.saveResult(
-										getApplicationContext(), listResults);
-							}
+						switch (r.getState()) {
+						case Result.UNPROCESSED:											
+							
+							
+							r.setOcrText(ocr.doOcr(r.getImage()));
+							r.setContent(r.getOcrText());
+							r.setState(Result.DONE);
+							
+							break;
+							
+						case Result.OCR_PROCESSED:
+						
+							break;
+						
+						case Result.BLAST_PROCESSED:
+							
+							break;						
 
+						default:
+							break;
 						}
 					}
+					ResultManager.saveResult(getApplicationContext(), listResults);
 
 				} catch (Exception e) {
 					Log.e(TAG, "Error checking results: " + e.getMessage());
+					e.printStackTrace();
 				}
 			} else {
 				Log.d(TAG, "Not connected to the internet");
 			}
-			Log.d(TAG,"Currently running tasks: " + tasks.size());
 			updateResults();
 			handler.postDelayed(this, 1000);
 		}
@@ -158,7 +151,7 @@ public class MainActivity extends DrawerActivity {
 					int position, long arg3) {
 				Result target = listResults.get(position);
 				switch (target.getState()) {
-				case 0:
+				case Result.UNPROCESSED:
 					Toast.makeText(
 							getApplicationContext(),
 							getResources().getString(R.string.warning_not_sent),
@@ -169,7 +162,7 @@ public class MainActivity extends DrawerActivity {
 							getResources().getString(R.string.warning_waiting),
 							Toast.LENGTH_SHORT).show();
 					break;
-				case 2:
+				case Result.DONE:
 					target.setChecked(true);
 					ResultManager.saveResult(getApplicationContext(),
 							listResults);
@@ -177,12 +170,10 @@ public class MainActivity extends DrawerActivity {
 							ResultActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putString("id", target.getId());
-					bundle.putByteArray("img", target.getImage());
 					bundle.putString("date", new Date().toString());
 					bundle.putString("content", target.getContent());
 					it.putExtras(bundle);
 					startActivity(it);
-					updateResults();
 					break;
 				default:
 					Log.d(MainActivity.TAG, "Unknown result state");
@@ -194,6 +185,7 @@ public class MainActivity extends DrawerActivity {
 		// notification test
 		handler = new Handler();
 		handler.postDelayed(checkResultsLoop, 1000);
+		Log.d(TAG, ResultManager.loadResults(this).toString());
 	}
 
 	public void goTakePicture(View v) {
@@ -208,106 +200,33 @@ public class MainActivity extends DrawerActivity {
 
 	@SuppressWarnings("unchecked")
 	private void updateResults() {
-		listResults.clear();
-		try {
-			InputStream is = openFileInput("results");
-			InputStream buffer = new BufferedInputStream(is);
-			ObjectInputStream ois = new ObjectInputStream(buffer);
-			List<Result> newList = (List<Result>) ois.readObject();
-			listResults.addAll(newList);
-			ois.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		listResults.clear();
+//		try {
+//			InputStream is = openFileInput("results");
+//			InputStream buffer = new BufferedInputStream(is);
+//			ObjectInputStream ois = new ObjectInputStream(buffer);
+//			List<Result> newList = (List<Result>) ois.readObject();
+//			listResults.addAll(newList);
+//			ois.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		Log.d(TAG, "Tried to update");
+		listResults = ResultManager.loadResults(getApplicationContext());
 		adapter.notifyDataSetChanged();
 	}
 
-	private class CheckResultsTask extends AsyncTask<URL, Integer, String> {
-		private Context context;
-		private String resultId;
-
-		public CheckResultsTask(Context context, String resultId) {
-			this.context = context;
-			this.resultId = resultId;
-		}
-
-		public String getId() {
-			return this.resultId;
-		}
+	private class CheckResultsTask extends AsyncTask<URL, Integer, String> {	
 
 		@Override
 		protected String doInBackground(URL... url) {
-			try {
-				return readJsonFromUrl(url[0]);
-			} catch (IOException e) {
-				return "";
-			}
-		}
-
-		private String readJsonFromUrl(URL url) throws IOException {
-			BufferedReader reader = null;
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setReadTimeout(10000 /* milliseconds */);
-			conn.setConnectTimeout(15000 /* milliseconds */);
-			conn.setRequestMethod("GET");
-			conn.setDoInput(true);
-			conn.connect();
-			reader = new BufferedReader(new InputStreamReader(
-					conn.getInputStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
-			reader.close();
-			return buffer.toString();
-		}
+			return null;
+		}	
+		
 
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			// finds the target result from this task
-			List<Result> list = ResultManager.loadResults(context);
-			Result target = null;
-			for (Result r : list) {
-				if (r.getId().equals(resultId)) {
-					target = r;
-					break;
-				}
-			}
-			// checks the result in case a result was found
-			if (target != null) {
-				// possible broken URL
-				if (result.length() == 0) {
-					target.setContent("");
-				} else {
-					try {
-						target.setDone();
-						String strNotification = context.getResources()
-								.getString(R.string.notify_done_A)
-								+ target.getId()
-								+ " "
-								+ context.getResources().getString(
-										R.string.notify_done_B);
-						Toast.makeText(context, strNotification,
-								Toast.LENGTH_SHORT).show();
-						target.setContent(result);
-						JSONObject json = new JSONObject(result);
-						Log.d(MainActivity.TAG, json.toString());
-					} catch (JSONException e) {
-						Log.e(MainActivity.TAG, "Failed to parse JSON object: "
-								+ e.getMessage());
-					}
-					ResultManager.saveResult(context, list);
-					updateResults();
-				}
-			} else {
-				// doesn't do anything in case a result couldn't be found
-				Log.e(MainActivity.TAG,
-						"A task was resolved but there was no result for the task's id ["
-								+ resultId + "]");
-			}
-			tasks.remove(this);
 		}
 
 	}
@@ -315,7 +234,7 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		updateResults();
+//		updateResults();
 	}
 
 	@Override

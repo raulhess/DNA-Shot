@@ -9,11 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
 
 public class ResultManager {
 	public static void saveResult(Context context,List<Result> list) {
+		Log.d(MainActivity.TAG, "list:" + list.size());
 		try {
 			FileOutputStream foo = context.openFileOutput("results",
 					Context.MODE_PRIVATE);

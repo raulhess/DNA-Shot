@@ -4,12 +4,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Result implements Serializable{
+	public static final int UNPROCESSED = 0;
+	public static final int OCR_PROCESSED = 1;
+	public static final int BLAST_PROCESSED = 2;
+	public static final int DONE = 10;
+	public static final int ERROR = -1;
+	
 	private static final long serialVersionUID = 982757938298536428L;
 	private String id;
+	private byte[] thumbnail;
 	private byte[] image;
 	private boolean checked;
 	private Date date;
 	private String content;
+	private String ocrText;
 	
 	private int state = 0;
 
@@ -17,24 +25,28 @@ public class Result implements Serializable{
 		return state;
 	}
 
-	public void setNotSent() {
-		this.state = 0;
+	public String getOcrText() {
+		return ocrText;
 	}
-	
-	public void setWaiting() {
-		this.state = 1;
+
+	public void setOcrText(String ocrText) {
+		this.ocrText = ocrText;
 	}
-	
-	public void setDone() {
-		this.state = 2;
-	}
-	
+
 	public String getId() {
 		return id;
 	}
 	
 	public void setId(String id){
 		this.id = id;
+	}
+	
+	public byte[] getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(byte[] image) {
+		this.thumbnail = image;
 	}
 	
 	public byte[] getImage() {
