@@ -57,8 +57,8 @@ public class MainActivity extends DrawerActivity {
 			Log.d(TAG, "Checking results");
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			Ocr ocr = new Ocr(getApplicationContext());		
 			if (networkInfo != null && networkInfo.isConnected()) {
+				Ocr ocr  = new Ocr(getApplicationContext());
 				try {
 					listResults = ResultManager.loadResults(getApplicationContext());
 					for (Result r : listResults) {
@@ -150,6 +150,7 @@ public class MainActivity extends DrawerActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 				Result target = listResults.get(position);
+				Log.d(TAG, "Clicked item with number: " + position);
 				switch (target.getState()) {
 				case Result.UNPROCESSED:
 					Toast.makeText(
@@ -198,21 +199,10 @@ public class MainActivity extends DrawerActivity {
 		startActivity(it);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateResults() {
-//		listResults.clear();
-//		try {
-//			InputStream is = openFileInput("results");
-//			InputStream buffer = new BufferedInputStream(is);
-//			ObjectInputStream ois = new ObjectInputStream(buffer);
-//			List<Result> newList = (List<Result>) ois.readObject();
-//			listResults.addAll(newList);
-//			ois.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		Log.d(TAG, "Tried to update");
+		adapter.clear();
 		listResults = ResultManager.loadResults(getApplicationContext());
+		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}
 
