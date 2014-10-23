@@ -1,10 +1,5 @@
 package com.dnareader.activities;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +10,6 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -28,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dnareader.data.Result;
-import com.dnareader.processing.Ocr;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
 import com.dnareader.system.ResultsAdapter;
@@ -58,17 +51,15 @@ public class MainActivity extends DrawerActivity {
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			if (networkInfo != null && networkInfo.isConnected()) {
-				Ocr ocr  = new Ocr(getApplicationContext());
+//				Ocr ocr  = new Ocr(getApplicationContext());
 				try {
-					listResults = ResultManager.loadResults(getApplicationContext());
+//					listResults = ResultManager.loadResults(getApplicationContext());
 					for (Result r : listResults) {
 						switch (r.getState()) {
 						case Result.UNPROCESSED:											
 							
 							
-							r.setOcrText(ocr.doOcr(r.getImage()));
-							r.setContent(r.getOcrText());
-							r.setState(Result.DONE);
+							
 							
 							break;
 							
@@ -84,7 +75,7 @@ public class MainActivity extends DrawerActivity {
 							break;
 						}
 					}
-					ResultManager.saveResult(getApplicationContext(), listResults);
+//					ResultManager.saveResult(getApplicationContext(), listResults);
 
 				} catch (Exception e) {
 					Log.e(TAG, "Error checking results: " + e.getMessage());
@@ -206,20 +197,20 @@ public class MainActivity extends DrawerActivity {
 		adapter.notifyDataSetChanged();
 	}
 
-	private class CheckResultsTask extends AsyncTask<URL, Integer, String> {	
-
-		@Override
-		protected String doInBackground(URL... url) {
-			return null;
-		}	
-		
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-		}
-
-	}
+//	private class CheckResultsTask extends AsyncTask<URL, Integer, String> {	
+//
+//		@Override
+//		protected String doInBackground(URL... url) {
+//			return null;
+//		}	
+//		
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//			super.onPostExecute(result);
+//		}
+//
+//	}
 
 	@Override
 	protected void onResume() {

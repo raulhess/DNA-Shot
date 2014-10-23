@@ -22,6 +22,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.dnareader.data.Result;
+import com.dnareader.processing.Ocr;
 import com.dnareader.system.CameraPreview;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
@@ -53,6 +54,12 @@ public class TakePictureActivity extends DrawerActivity {
 			r.setThumbnail(getThumbnail(data));
 			r.setImage(data);
 			r.setChecked(false);
+			
+			Ocr ocr  = new Ocr(getApplicationContext());
+			r.setOcrText(ocr.doOcr(r.getImage()));
+			r.setContent(r.getOcrText());
+			r.setState(Result.DONE);
+			
 			list.add(0,r);
 			ResultManager.saveResult(getApplicationContext(),list);
 			Log.d(MainActivity.TAG, "Picture captured! " + list.size() );
