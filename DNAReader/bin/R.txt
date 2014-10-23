@@ -421,6 +421,13 @@ int menu result 0x7f0d0002
 int menu results 0x7f0d0003
 int menu take_picture 0x7f0d0004
 int menu upload_picture 0x7f0d0005
+int string BLAST_PROCESSED 0x7f0a003b
+int string BLAST_PROCESSING 0x7f0a003a
+int string DONE 0x7f0a003c
+int string ERROR 0x7f0a003d
+int string OCR_PROCESSED 0x7f0a0039
+int string OCR_PROCESSING 0x7f0a0038
+int string UNPROCESSED 0x7f0a0037
 int string abc_action_bar_home_description 0x7f0a0001
 int string abc_action_bar_up_description 0x7f0a0002
 int string abc_action_menu_overflow_description 0x7f0a0003

@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.os.Environment;
 import android.util.Log;
 
@@ -31,9 +29,7 @@ public class Ocr {
 	public static final String lang = "eng";
 
 	private String TAG;
-
-
-	protected String _path;
+	
 	protected boolean _taken;
 	private Context context;
 	
@@ -91,9 +87,7 @@ public class Ocr {
 				Log.e(TAG, "Was unable to copy " + lang + " traineddata " + e.toString());
 			}
 		}
-
-
-		_path = DATA_PATH + "/ocr.jpg";
+		
 	}
 	
 	public String doOcr(byte[] image){
@@ -105,51 +99,9 @@ public class Ocr {
 			options.inSampleSize = 4;
 
 			Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length,options);
-
-			try {
-				ExifInterface exif = new ExifInterface(_path);
-				int exifOrientation = exif.getAttributeInt(
-						ExifInterface.TAG_ORIENTATION,
-						ExifInterface.ORIENTATION_NORMAL);
-
-				Log.v(TAG, "Orient: " + exifOrientation);
-
-				int rotate = 0;
-
-				switch (exifOrientation) {
-				case ExifInterface.ORIENTATION_ROTATE_90:
-					rotate = 90;
-					break;
-				case ExifInterface.ORIENTATION_ROTATE_180:
-					rotate = 180;
-					break;
-				case ExifInterface.ORIENTATION_ROTATE_270:
-					rotate = 270;
-					break;
-				}
-
-				Log.v(TAG, "Rotation: " + rotate);
-
-				if (rotate != 0) {
-
-					// Getting width & height of the given image.
-					int w = bitmap.getWidth();
-					int h = bitmap.getHeight();
-
-					// Setting pre rotate
-					Matrix mtx = new Matrix();
-					mtx.preRotate(rotate);
-
-					// Rotating Bitmap
-					bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
-				}
-
-				// Convert to ARGB_8888, required by tess
-				bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-			} catch (IOException e) {
-				Log.e(TAG, "Couldn't correct orientation: " + e.toString());
-			}
+		
+			// Convert to ARGB_8888, required by tess
+			//bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);			
 
 			// _image.setImageBitmap( bitmap );
 			
@@ -169,16 +121,13 @@ public class Ocr {
 			// so that garbage doesn't make it to the display.
 
 			Log.v(TAG, "OCRED TEXT: " + recognizedText);
-
 			
-			recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", " ");
-						
-		
+			recognizedText = recognizedText.replaceAll("[^acgtACGT]", "");			
 
 			final long endTime = System.currentTimeMillis();
 			Log.v(TAG, "Tempo onPhotoTaken():" + (endTime-startTime)/1000.0);
 			
-			return recognizedText;		
+			return recognizedText.toUpperCase();		
 
 	}
 	

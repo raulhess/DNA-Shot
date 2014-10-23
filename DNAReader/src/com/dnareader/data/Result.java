@@ -5,8 +5,10 @@ import java.util.Date;
 
 public class Result implements Serializable{
 	public static final int UNPROCESSED = 0;
-	public static final int OCR_PROCESSED = 1;
-	public static final int BLAST_PROCESSED = 2;
+	public static final int OCR_PROCESSING = 1;
+	public static final int OCR_PROCESSED = 2;
+	public static final int BLAST_PROCESSING =3;
+	public static final int BLAST_PROCESSED = 4;
 	public static final int DONE = 10;
 	public static final int ERROR = -1;
 	
@@ -18,8 +20,16 @@ public class Result implements Serializable{
 	private Date date;
 	private String content;
 	private String ocrText;
-	
+	private String blastXML;		
 	private int state = 0;
+	
+	public String getBlastXML() {
+		return blastXML;
+	}
+
+	public void setBlastXML(String blastXML) {
+		this.blastXML = blastXML;
+	}
 
 	public int getState() {
 		return state;

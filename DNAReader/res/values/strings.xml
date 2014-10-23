@@ -57,6 +57,15 @@
     <string name="settings_notifications">Enviar notificações quando um resultado ficar pronto</string>
     <string name="warning_not_sent">O item selecionado ainda não foi enviado ao servidor</string>
     <string name="warning_waiting">O item selecionado ainda está sendo processado no nosso servidor</string>
+    
+    <string name="UNPROCESSED">Processamento não iniciado</string>
+    <string name="OCR_PROCESSING">OCR em andamento</string>
+    <string name="OCR_PROCESSED">OCR terminou</string>
+    <string name="BLAST_PROCESSING">Consulta ao BLAST iniciada</string>
+    <string name="BLAST_PROCESSED">Consulta ao BLAST terminada</string>
+    <string name="DONE">Pronto</string>
+    <string name="ERROR">Ocorreu um erro de processamento</string>    
+
 
     <string-array name="array_language">
         <item> English</item>

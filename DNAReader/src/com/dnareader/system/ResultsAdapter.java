@@ -46,19 +46,31 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		case Result.UNPROCESSED:
 			status.setText("Status: "
 					+ context.getResources()
-							.getString(R.string.result_not_sent));
+							.getString(R.string.UNPROCESSED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
 			break;
+		case Result.OCR_PROCESSING:
+			status.setText("Status: "
+					+ context.getResources().getString(R.string.OCR_PROCESSING));
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_white));
+			break;	
 		case Result.OCR_PROCESSED:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.result_waiting));
+					+ context.getResources().getString(R.string.OCR_PROCESSED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;
+			break;		
+		case Result.BLAST_PROCESSING:
+			status.setText("Status: "
+					+ context.getResources().getString(R.string.BLAST_PROCESSING));
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_white));
+			break;		
 		case Result.DONE:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.result_done));
+					+ context.getResources().getString(R.string.DONE));
 			if (list.get(position).isChecked())
 				cellView.setBackgroundColor(context.getResources().getColor(
 						R.color.app_soft_blue));
