@@ -30,16 +30,11 @@
         android:layout_height="1dp"
         android:background="@color/app_gray" />
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/app_light_gray"
+    <ExpandableListView
+        android:id="@+id/expandable_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="5dp" >
-
-        <TextView
-            android:id="@+id/result_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+    </ExpandableListView>
 
 </LinearLayout>

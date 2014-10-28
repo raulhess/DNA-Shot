@@ -20,13 +20,14 @@ public class ResultManager {
 	public static final String DIRECTORY = "/DNAShot";
 
 	public static void saveResult(Context context, List<Result> list) {
-		if (isExternalStorageWritable()) {
+		Log.d(MainActivity.TAG, "Jesus");
+		if (isExternalStorageWritable() && list.size() > 0) {
 			Log.d(MainActivity.TAG, "list:" + list.size());
 			try {
 				File sdCard = Environment.getExternalStorageDirectory();
-				File directory = new File (sdCard.getAbsolutePath() + DIRECTORY);
+				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
 				directory.mkdirs();
-				
+
 				File file = new File(directory, FILENAME);
 				FileOutputStream fos = new FileOutputStream(file);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -40,20 +41,16 @@ public class ResultManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Result> loadResults(Context context) {
+	public static List<Result> loadResults(Context context) throws Exception {
 		if (isExternalStorageReadable()) {
-			try {
 				File sdCard = Environment.getExternalStorageDirectory();
-				File directory = new File (sdCard.getAbsolutePath() + DIRECTORY);
+				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
 				File file = new File(directory, FILENAME);
 				FileInputStream fis = new FileInputStream(file);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				List<Result> newList = (List<Result>) ois.readObject();
 				ois.close();
 				return newList;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 		return new ArrayList<Result>();
 	}

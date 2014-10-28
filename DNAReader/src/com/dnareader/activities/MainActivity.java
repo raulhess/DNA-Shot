@@ -1,5 +1,6 @@
 package com.dnareader.activities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +45,8 @@ public class MainActivity extends DrawerActivity {
 	private List<Result> listResults;
 	private ListView results;
 	private ResultsAdapter adapter;
+	
+	private Ocr ocr;
 
 	private static Handler handler;
 	Runnable checkResultsLoop = new Runnable() {
@@ -53,8 +56,7 @@ public class MainActivity extends DrawerActivity {
 			Log.d(TAG, "Checking results");
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			if (networkInfo != null && networkInfo.isConnected()) {
-				Ocr ocr = new Ocr(getApplicationContext());
+			if (networkInfo != null && networkInfo.isConnected()) {				
 				try {
 					listResults = ResultManager
 							.loadResults(getApplicationContext());
@@ -64,9 +66,14 @@ public class MainActivity extends DrawerActivity {
 
 							// r.setState(Result.OCR_PROCESSING);
 							// handler.sendEmptyMessage(1);
-							r.setOcrText(ocr.doOcr(r.getImage()));
-							r.setContent(r.getOcrText());
-							r.setState(Result.OCR_PROCESSED);
+							String text = ocr.doOcr(r.getImage());
+							if (text.length() > 5){
+								r.setOcrText(text);
+								r.setState(Result.OCR_PROCESSED);
+							}else{
+								r.setState(Result.ERROR);
+							}
+							
 
 							break;
 
@@ -77,12 +84,14 @@ public class MainActivity extends DrawerActivity {
 
 							Blast blast = new Blast();
 							String xml = blast.doBlast(r.getOcrText());
-
-							r.setBlastXML(xml);
-							r.setContent(r.getBlastXML() + r.getOcrText());
-
-							r.setState(Result.DONE);
-
+							
+							if (xml != null){
+								r.setBlastXML(xml);
+								r.setState(Result.DONE);
+							}else{
+								r.setState(Result.ERROR);
+							}
+							
 							break;
 
 						case Result.BLAST_PROCESSED:
@@ -151,7 +160,11 @@ public class MainActivity extends DrawerActivity {
 
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
-		listResults = ResultManager.loadResults(this);
+		try{
+			listResults = ResultManager.loadResults(this);
+		}catch(Exception e){
+			listResults = new ArrayList<Result>();
+		}
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);
 		results.setOnItemClickListener(new OnItemClickListener() {
@@ -183,6 +196,8 @@ public class MainActivity extends DrawerActivity {
 					bundle.putString("id", target.getId());
 					bundle.putString("date", new Date().toString());
 					bundle.putString("content", target.getContent());
+					bundle.putString("xml", target.getBlastXML());
+					bundle.putString("ocr", target.getOcrText());
 					it.putExtras(bundle);
 					startActivity(it);
 					break;
@@ -194,6 +209,8 @@ public class MainActivity extends DrawerActivity {
 
 		});
 		// notification test
+		
+		ocr = new Ocr(getApplicationContext());
 		handler = new Handler() {
 			// Create handleMessage function
 			public void handleMessage(Message msg) {
@@ -201,6 +218,7 @@ public class MainActivity extends DrawerActivity {
 				updateResults();
 
 				if (msg.what == 10) {
+					Log.d(TAG, "Starting new thread");
 					handler.postDelayed(new Runnable() {
 						public void run() {
 							new Thread(checkResultsLoop).start();
@@ -216,8 +234,11 @@ public class MainActivity extends DrawerActivity {
 				new Thread(checkResultsLoop).start();
 			}
 		});
-
-		Log.d(TAG, ResultManager.loadResults(this).toString());
+		
+	}
+	
+	private static class CustomHandler extends Handler{
+		
 	}
 
 	public void goTakePicture(View v) {
@@ -232,7 +253,11 @@ public class MainActivity extends DrawerActivity {
 
 	private void updateResults() {
 		adapter.clear();
-		listResults = ResultManager.loadResults(getApplicationContext());
+		try{
+			listResults = ResultManager.loadResults(getApplicationContext());
+		}catch(Exception e){
+			listResults = new ArrayList<Result>();
+		}
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}

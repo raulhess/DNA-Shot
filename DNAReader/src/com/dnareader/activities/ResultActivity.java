@@ -1,17 +1,24 @@
 package com.dnareader.activities;
 
+import java.util.List;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.dnareader.data.Hit;
+import com.dnareader.processing.Blast;
 import com.dnareader.system.DrawerActivity;
+import com.dnareader.system.HitsAdapter;
 import com.dnareader.v0.R;
 
 public class ResultActivity extends DrawerActivity {
 	private TextView time;
-	private TextView results;
+	private ExpandableListView content;
+	private HitsAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,16 +29,20 @@ public class ResultActivity extends DrawerActivity {
 		Bundle bundle = getIntent().getExtras();
 
 		time = (TextView) findViewById(R.id.result_time);
-		results = (TextView) findViewById(R.id.result_text);
+		content = (ExpandableListView) findViewById(R.id.expandable_list);
 
 		if (bundle != null) {
 			try {
 				setTitle(getResources().getString(R.string.result_id)
 						+ bundle.getString("id"));
 				time.setText(getResources().getString(R.string.result_date) + bundle.getString("date"));
-				results.setText(bundle.getString("content"));
+//				results.setText(bundle.getString("content"));
+				List<Hit> hits = Blast.parseBlastXML(bundle.getString("xml"));
+				adapter = new HitsAdapter(this, hits);
+				content.setAdapter(adapter);
 			} catch (Exception e) {
 				Log.e("DNAReader", "Error: " + e.getMessage());
+				e.printStackTrace();
 				this.finish();
 			}
 		}

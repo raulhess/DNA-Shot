@@ -76,7 +76,7 @@
         <activity
             android:name="com.dnareader.activities.ResultActivity"
             android:label="@string/title_activity_result"
-            android:parentActivityName="com.dnareader.system.Results"
+            android:parentActivityName="com.dnareader.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

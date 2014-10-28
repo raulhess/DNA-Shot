@@ -23,7 +23,7 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		super(context, R.layout.result_cell, list);
 		this.context = context;
 		this.list = list;
-
+		
 	}
 
 	@SuppressLint({ "ViewHolder", "InflateParams" })
@@ -77,6 +77,17 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 			else
 				cellView.setBackgroundColor(context.getResources().getColor(
 						R.color.app_blue));
+			break;
+			
+		case Result.ERROR:
+			status.setText("Status: "
+					+ context.getResources().getString(R.string.ERROR));
+			if (list.get(position).isChecked())
+				cellView.setBackgroundColor(context.getResources().getColor(
+						R.color.app_soft_red));
+			else
+				cellView.setBackgroundColor(context.getResources().getColor(
+						R.color.app_red));
 			break;
 		}
 
