@@ -3,6 +3,8 @@ package com.dnareader.processing;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -12,10 +14,13 @@ import org.biojava3.ws.alignment.qblast.BlastProgramEnum;
 import org.biojava3.ws.alignment.qblast.NCBIQBlastAlignmentProperties;
 import org.biojava3.ws.alignment.qblast.NCBIQBlastOutputProperties;
 import org.biojava3.ws.alignment.qblast.NCBIQBlastService;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import com.dnareader.data.Hit;
 
 public class Blast {
 
-	
 	public String doBlast(String sequence) {
 
 		NCBIQBlastService service = new NCBIQBlastService();
@@ -24,7 +29,7 @@ public class Blast {
 		NCBIQBlastAlignmentProperties props = new NCBIQBlastAlignmentProperties();
 		props.setBlastProgram(BlastProgramEnum.blastn);
 		props.setBlastDatabase("nr");
-		//props.setAlignmentOption(ENTREZ_QUERY,"\"serum albumin\"[Protein name] AND mammals[Organism]");
+		// props.setAlignmentOption(ENTREZ_QUERY,"\"serum albumin\"[Protein name] AND mammals[Organism]");
 
 		// set output options
 		NCBIQBlastOutputProperties outputProps = new NCBIQBlastOutputProperties();
@@ -37,7 +42,7 @@ public class Blast {
 		// outputProps.setOutputOption(BlastOutputParameterEnum.ALIGNMENTS,
 		// "200");
 
-		String rid = null; // blast request ID		
+		String rid = null; // blast request ID
 		BufferedReader reader = null;
 		String xml = "";
 		try {
@@ -46,26 +51,27 @@ public class Blast {
 
 			// wait until results become available. Alternatively, one can do
 			// other computations/send other alignment requests
-			
+
 			while (!service.isReady(rid)) {
-				System.out.println("Waiting for results. Sleeping for 8 seconds");
+				System.out
+						.println("Waiting for results. Sleeping for 8 seconds");
 				Thread.sleep(8000);
 			}
 
 			// read results when they are ready
 			InputStream in = service.getAlignmentResults(rid, outputProps);
-			reader = new BufferedReader(new InputStreamReader(in));			
+			reader = new BufferedReader(new InputStreamReader(in));
 
 			String line;
 			while ((line = reader.readLine()) != null) {
 				xml += line + System.getProperty("line.separator");
 			}
-			
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			// clean up	
+			// clean up
 			IOUtils.close(reader);
 			// delete given alignment results from blast server (optional
 			// operation)
@@ -74,21 +80,24 @@ public class Blast {
 		}
 		return xml;
 	}
-	
-	
-	public static String parseBlastXML(String xml){
-		
-		SAXParserFactory SAXfactory = SAXParserFactory.newInstance();
-        try {
-            SAXParser SAXParserObj = SAXfactory.newSAXParser();
-            
-           
 
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-		
-		return "";
+	public static ArrayList<Hit> parseBlastXML(String xml) {
+		ArrayList<Hit> hits = null;
+		try {
+			SAXParserFactory SAXfactory = SAXParserFactory.newInstance();
+			SAXParser SAXParserObj = SAXfactory.newSAXParser();
+			XMLReader xmlReader = SAXParserObj.getXMLReader();
+			SAXXMLHandler handler = new SAXXMLHandler();
+			xmlReader.setContentHandler(handler);
+			xmlReader.parse(new InputSource(new StringReader(xml)));
+
+			hits = handler.getHits();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return hits;
 	}
-	
+
 }
