@@ -22,6 +22,7 @@ public class Result implements Serializable{
 	private String ocrText;
 	private String blastXML;		
 	private int state = 0;
+	private String rid; // Blast request id
 	
 	public String getBlastXML() {
 		return blastXML;
@@ -93,6 +94,14 @@ public class Result implements Serializable{
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
 	}
 	
 }

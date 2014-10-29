@@ -1,6 +1,7 @@
 package com.dnareader.processing;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -21,44 +22,42 @@ import com.dnareader.data.Hit;
 
 public class Blast {
 
-	public String doBlast(String sequence) {
+	NCBIQBlastService service;
+	NCBIQBlastAlignmentProperties props;
+	NCBIQBlastOutputProperties outputProps;
 
-		NCBIQBlastService service = new NCBIQBlastService();
+	public Blast() {
+		service = new NCBIQBlastService();
 
 		// set alignment options
-		NCBIQBlastAlignmentProperties props = new NCBIQBlastAlignmentProperties();
+		props = new NCBIQBlastAlignmentProperties();
+
 		props.setBlastProgram(BlastProgramEnum.blastn);
 		props.setBlastDatabase("nr");
-		// props.setAlignmentOption(ENTREZ_QUERY,"\"serum albumin\"[Protein name] AND mammals[Organism]");
 
 		// set output options
-		NCBIQBlastOutputProperties outputProps = new NCBIQBlastOutputProperties();
-		// in this example we use default values set by constructor (XML format,
-		// pairwise alignment, 100 descriptions and alignments)
+		outputProps = new NCBIQBlastOutputProperties();
 
-		// Example of two possible ways of setting output options
 		outputProps.setAlignmentNumber(5);
 		outputProps.setDescriptionNumber(5);
-		// outputProps.setOutputOption(BlastOutputParameterEnum.ALIGNMENTS,
-		// "200");
+	}
+
+	public String startBlast(String sequence) throws Exception {
 
 		String rid = null; // blast request ID
-		BufferedReader reader = null;
+		
+		// send blast request and save request id
+		rid = service.sendAlignmentRequest(sequence, props);
+		return rid;
+	}
+
+	public String checkBlast(String rid) throws IOException, Exception {
+
 		String xml = "";
-		try {
-			// send blast request and save request id
-			rid = service.sendAlignmentRequest(sequence, props);
+		BufferedReader reader = null;
 
-			// wait until results become available. Alternatively, one can do
-			// other computations/send other alignment requests
+		if (service.isReady(rid)) {
 
-			while (!service.isReady(rid)) {
-				System.out
-						.println("Waiting for results. Sleeping for 8 seconds");
-				Thread.sleep(8000);
-			}
-
-			// read results when they are ready
 			InputStream in = service.getAlignmentResults(rid, outputProps);
 			reader = new BufferedReader(new InputStreamReader(in));
 
@@ -67,18 +66,14 @@ public class Blast {
 				xml += line + System.getProperty("line.separator");
 			}
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} finally {
-			// clean up
 			IOUtils.close(reader);
-			// delete given alignment results from blast server (optional
-			// operation)
 			service.sendDeleteRequest(rid);
-
+		} else {
+			return null;
 		}
+
 		return xml;
+
 	}
 
 	public static ArrayList<Hit> parseBlastXML(String xml) {

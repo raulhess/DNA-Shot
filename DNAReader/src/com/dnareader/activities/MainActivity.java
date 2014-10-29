@@ -29,6 +29,7 @@ import com.dnareader.processing.Ocr;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
 import com.dnareader.system.ResultsAdapter;
+import com.dnareader.system.service.LoopThread;
 import com.dnareader.v0.R;
 
 @SuppressLint("InflateParams")
@@ -46,75 +47,12 @@ public class MainActivity extends DrawerActivity {
 	private ListView results;
 	private ResultsAdapter adapter;
 	
-	private Ocr ocr;
+	public static Ocr ocr;
+	public static Blast blast;
 
-	private static Handler handler;
-	Runnable checkResultsLoop = new Runnable() {
-
-		@Override
-		public void run() {
-			Log.d(TAG, "Checking results");
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			if (networkInfo != null && networkInfo.isConnected()) {				
-				try {
-					listResults = ResultManager
-							.loadResults(getApplicationContext());
-					for (Result r : listResults) {
-						switch (r.getState()) {
-						case Result.UNPROCESSED:
-
-							// r.setState(Result.OCR_PROCESSING);
-							// handler.sendEmptyMessage(1);
-							String text = ocr.doOcr(r.getImage());
-							if (text.length() > 5){
-								r.setOcrText(text);
-								r.setState(Result.OCR_PROCESSED);
-							}else{
-								r.setState(Result.ERROR);
-							}
-							
-
-							break;
-
-						case Result.OCR_PROCESSED:
-
-							// r.setState(Result.BLAST_PROCESSING);
-							// handler.sendEmptyMessage(1);
-
-							Blast blast = new Blast();
-							String xml = blast.doBlast(r.getOcrText());
-							
-							if (xml != null){
-								r.setBlastXML(xml);
-								r.setState(Result.DONE);
-							}else{
-								r.setState(Result.ERROR);
-							}
-							
-							break;
-
-						case Result.BLAST_PROCESSED:
-
-							break;
-
-						default:
-							break;
-						}
-					}
-					ResultManager.saveResult(getApplicationContext());
-
-				} catch (Exception e) {
-					Log.e(TAG, "Error checking results: " + e.getMessage());
-					e.printStackTrace();
-				}
-			} else {
-				Log.d(TAG, "Not connected to the internet");
-			}
-
-			handler.sendEmptyMessage(10);
-		}
-	};
+	public static Handler handler;
+	Runnable checkResultsLoop;
+	private Thread thread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +146,13 @@ public class MainActivity extends DrawerActivity {
 		});
 		// notification test
 		
-		ocr = new Ocr(getApplicationContext());
+		checkResultsLoop = new LoopThread(getApplicationContext());		
+		
+		if (ocr ==null)		
+			ocr = new Ocr(getApplicationContext());
+		if (blast == null)
+			blast = new Blast();
+		
 		handler = new Handler() {
 			// Create handleMessage function
 			public void handleMessage(Message msg) {
@@ -216,29 +160,33 @@ public class MainActivity extends DrawerActivity {
 				updateResults();
 
 				if (msg.what == 10) {
-					Log.d(TAG, "Starting new thread");
+					if (thread == null || !thread.isAlive()){				
 					handler.postDelayed(new Runnable() {
 						public void run() {
-							new Thread(checkResultsLoop).start();
+							Log.d(TAG, "Starting new thread");
+							thread = new Thread(checkResultsLoop);
+							thread.start();
 						}
 					}, 5000);
+				}
 				}
 
 			}
 		};
-
-		handler.post(new Runnable() {
-			public void run() {
-				new Thread(checkResultsLoop).start();
-			}
-		});
+		
+		if (thread == null || !thread.isAlive()){			
+			handler.post(new Runnable() {
+				public void run() {
+					Log.d(TAG, "Starting new thread");
+					thread = new Thread(checkResultsLoop);
+					thread.start();				
+				}
+			});
+		}
 		
 	}
 	
-	private static class CustomHandler extends Handler{
-		
-	}
-
+	
 	public void goTakePicture(View v) {
 		Intent it = new Intent(this, TakePictureActivity.class);
 		startActivity(it);
@@ -251,11 +199,11 @@ public class MainActivity extends DrawerActivity {
 
 	private void updateResults() {
 		adapter.clear();
-//		try{
-//			listResults = ResultManager.loadResults(getApplicationContext());
-//		}catch(Exception e){
-//			listResults = new ArrayList<Result>();
-//		}
+		try{
+			listResults = ResultManager.loadResults(getApplicationContext());
+		}catch(Exception e){
+			listResults = new ArrayList<Result>();
+		}
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}
