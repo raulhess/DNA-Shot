@@ -20,12 +20,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Dnareader" parent="Theme.AppCompat.Light">
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_dnareader</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Dnareader</item>
+    <style name="Theme.Dnareader" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Dnareader</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Dnareader</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Dnareader</item>
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Dnareader</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_dnareader</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_dnareader</item>

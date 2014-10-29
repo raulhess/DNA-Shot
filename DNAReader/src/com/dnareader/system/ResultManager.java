@@ -21,9 +21,7 @@ public class ResultManager {
 
 	public static void saveResult(Context context) {
 		List<Result> list = MainActivity.listResults;
-		Log.d(MainActivity.TAG, "Jesus");
 		if (isExternalStorageWritable() && list.size() > 0) {
-			Log.d(MainActivity.TAG, "list:" + list.size());
 			try {
 				File sdCard = Environment.getExternalStorageDirectory();
 				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
@@ -32,6 +30,28 @@ public class ResultManager {
 				File file = new File(directory, FILENAME);
 				FileOutputStream fos = new FileOutputStream(file);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(list);
+				oos.flush();
+				oos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void clearResults(Context context){
+		List<Result> list = new ArrayList<Result>();
+		Log.d(MainActivity.TAG, "Clear");
+		if (isExternalStorageWritable()) {
+			try {
+				File sdCard = Environment.getExternalStorageDirectory();
+				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
+				directory.mkdirs();
+
+				File file = new File(directory, FILENAME);
+				FileOutputStream fos = new FileOutputStream(file);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				Log.d(MainActivity.TAG, "Saved list with size: " + list.size());
 				oos.writeObject(list);
 				oos.flush();
 				oos.close();
@@ -51,6 +71,7 @@ public class ResultManager {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				List<Result> newList = (List<Result>) ois.readObject();
 				ois.close();
+				Log.d(MainActivity.TAG, "Loaded list with size: " + newList.size());
 				return newList;
 		}
 		return new ArrayList<Result>();

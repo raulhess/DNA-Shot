@@ -61,7 +61,7 @@ public class LoopThread implements Runnable {
 						Thread.sleep(5000);
 						
 						String xml = MainActivity.blast.checkBlast(r.getRid());
-
+						Log.d(MainActivity.TAG, xml);
 						if (xml != null) {
 							r.setBlastXML(xml);
 							r.setState(Result.DONE);

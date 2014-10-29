@@ -3,6 +3,7 @@
 
     <string name="app_name">DNA Reader</string>
     <string name="action_settings">Settings</string>
+    <string name="action_clear">Clear Results</string>
 
     <color name="app_blue">#1ED4C8</color>
     <color name="app_black">#000000</color>
@@ -17,6 +18,9 @@
     <color name="app_soft_blue">#B4DEDB</color>
 
     <string name="action_search">Pesquisar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="clear_results_title">Limpar lista de resultados?</string>
+    <string name="confirm">Confirmar</string>
     <string name="drawer_open">Abrir Drawer</string>
     <string name="drawer_close">Fechar Drawer</string>
     <string name="menu_take_picture">CAMERA</string>
