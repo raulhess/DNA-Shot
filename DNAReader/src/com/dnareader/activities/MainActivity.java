@@ -42,7 +42,7 @@ public class MainActivity extends DrawerActivity {
 	private TextView takePicture;
 	private TextView uploadPicture;
 
-	private List<Result> listResults;
+	public static List<Result> listResults;
 	private ListView results;
 	private ResultsAdapter adapter;
 	
@@ -102,8 +102,7 @@ public class MainActivity extends DrawerActivity {
 							break;
 						}
 					}
-					ResultManager.saveResult(getApplicationContext(),
-							listResults);
+					ResultManager.saveResult(getApplicationContext());
 
 				} catch (Exception e) {
 					Log.e(TAG, "Error checking results: " + e.getMessage());
@@ -188,8 +187,7 @@ public class MainActivity extends DrawerActivity {
 					break;
 				case Result.DONE:
 					target.setChecked(true);
-					ResultManager.saveResult(getApplicationContext(),
-							listResults);
+					ResultManager.saveResult(getApplicationContext());
 					Intent it = new Intent(getApplicationContext(),
 							ResultActivity.class);
 					Bundle bundle = new Bundle();
@@ -253,11 +251,11 @@ public class MainActivity extends DrawerActivity {
 
 	private void updateResults() {
 		adapter.clear();
-		try{
-			listResults = ResultManager.loadResults(getApplicationContext());
-		}catch(Exception e){
-			listResults = new ArrayList<Result>();
-		}
+//		try{
+//			listResults = ResultManager.loadResults(getApplicationContext());
+//		}catch(Exception e){
+//			listResults = new ArrayList<Result>();
+//		}
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}

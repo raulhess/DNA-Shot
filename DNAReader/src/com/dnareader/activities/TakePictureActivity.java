@@ -39,7 +39,7 @@ public class TakePictureActivity extends DrawerActivity {
 		public void onPictureTaken(byte[] data, Camera camera) {
 			List<Result> list = new ArrayList<Result>();
 			try{
-				list = ResultManager.loadResults(getApplicationContext());
+				list = MainActivity.listResults;
 				Result r = new Result();
 				if (list.size() < 9) {
 					r.setId("000" + (list.size() + 1));
@@ -55,7 +55,7 @@ public class TakePictureActivity extends DrawerActivity {
 				r.setImage(data);
 				r.setChecked(false);
 				list.add(0,r);
-				ResultManager.saveResult(getApplicationContext(),list);
+				ResultManager.saveResult(getApplicationContext());
 				Log.d(MainActivity.TAG, "Picture captured! " + list.size() );
 				pictureTaken();
 			}catch (Exception e){

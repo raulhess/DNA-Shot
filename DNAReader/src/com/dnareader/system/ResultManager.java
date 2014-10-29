@@ -19,7 +19,8 @@ public class ResultManager {
 	public static final String FILENAME = "results";
 	public static final String DIRECTORY = "/DNAShot";
 
-	public static void saveResult(Context context, List<Result> list) {
+	public static void saveResult(Context context) {
+		List<Result> list = MainActivity.listResults;
 		Log.d(MainActivity.TAG, "Jesus");
 		if (isExternalStorageWritable() && list.size() > 0) {
 			Log.d(MainActivity.TAG, "list:" + list.size());
