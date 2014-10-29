@@ -10,6 +10,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.dnareader.data.Hit;
+import com.dnareader.data.Result;
 import com.dnareader.processing.Blast;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.HitsAdapter;
@@ -33,11 +34,12 @@ public class ResultActivity extends DrawerActivity {
 
 		if (bundle != null) {
 			try {
+				Result target = MainActivity.listResults.get(bundle.getInt("position"));
 				setTitle(getResources().getString(R.string.result_id)
-						+ bundle.getString("id"));
-				time.setText(getResources().getString(R.string.result_date) + bundle.getString("date"));
+						+ target.getId());
+				time.setText(getResources().getString(R.string.result_date) + target.getDate());
 //				results.setText(bundle.getString("content"));
-				List<Hit> hits = Blast.parseBlastXML(bundle.getString("xml"));
+				List<Hit> hits = Blast.parseBlastXML(target.getBlastXML());
 				adapter = new HitsAdapter(this, hits);
 				content.setAdapter(adapter);
 			} catch (Exception e) {

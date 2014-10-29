@@ -192,10 +192,7 @@ public class MainActivity extends DrawerActivity {
 							ResultActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putString("id", target.getId());
-					bundle.putString("date", new Date().toString());
-					bundle.putString("content", target.getContent());
-					bundle.putString("xml", target.getBlastXML());
-					bundle.putString("ocr", target.getOcrText());
+					bundle.putInt("position", position);
 					it.putExtras(bundle);
 					startActivity(it);
 					break;
