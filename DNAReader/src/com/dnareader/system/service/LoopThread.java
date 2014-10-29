@@ -9,9 +9,13 @@ import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
-import com.dnareader.system.ResultManager;
 
 public class LoopThread implements Runnable {
+	
+	public static final int SAVE = 0;
+	public static final int LOAD = 1;	
+	public static final int RESTART = 3;	
+	public static final int RELOAD_GUI = 4;	
 
 	Context context;
 
@@ -25,6 +29,10 @@ public class LoopThread implements Runnable {
 		ConnectivityManager connMgr = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		
+		MainActivity.handler.sendEmptyMessage(LOAD);
+		MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
+		
 		if (networkInfo != null && networkInfo.isConnected()) {
 			try {
 				List<Result> listResults;
@@ -42,6 +50,9 @@ public class LoopThread implements Runnable {
 						} else {
 							r.setState(Result.ERROR);
 						}
+						
+						MainActivity.handler.sendEmptyMessage(SAVE);
+						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 
 						break;
 
@@ -53,12 +64,13 @@ public class LoopThread implements Runnable {
 						String rid = MainActivity.blast.startBlast(r.getOcrText());						
 						r.setRid(rid);
 						r.setState(Result.BLAST_PROCESSING);
+						
+						MainActivity.handler.sendEmptyMessage(SAVE);
+						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 
 						break;
 
 					case Result.BLAST_PROCESSING:
-						
-						Thread.sleep(5000);
 						
 						String xml = MainActivity.blast.checkBlast(r.getRid());
 
@@ -68,14 +80,17 @@ public class LoopThread implements Runnable {
 						} else {
 							r.setState(Result.ERROR);
 						}
+						
+						MainActivity.handler.sendEmptyMessage(SAVE);
+						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 
 						break;
 
-					default:
+					default:						
 						break;
 					}
 				}
-				ResultManager.saveResult(context);
+				
 
 			} catch (Exception e) {				
 				Log.e(MainActivity.TAG,	"Error checking results: " + e.getMessage());
@@ -84,8 +99,9 @@ public class LoopThread implements Runnable {
 		} else {
 			Log.d(MainActivity.TAG, "Not connected to the internet");
 		}
-
-		MainActivity.handler.sendEmptyMessage(10);
+		
+		MainActivity.handler.sendEmptyMessage(RESTART);
+		
 	}
 
 }

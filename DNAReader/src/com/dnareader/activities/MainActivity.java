@@ -1,16 +1,12 @@
 package com.dnareader.activities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -153,24 +149,43 @@ public class MainActivity extends DrawerActivity {
 		handler = new Handler() {
 			// Create handleMessage function
 			public void handleMessage(Message msg) {
+				
+				Log.d(TAG, "Message:" + msg.what);
 
-				updateResults();
+				switch (msg.what) {		
+				
+				case LoopThread.RELOAD_GUI:
+					updateGUI();
+					break;
+					
+				case LoopThread.LOAD:
+					load();
+					break;
 
-				if (msg.what == 10) {
-					if (thread == null || !thread.isAlive()){				
-					handler.postDelayed(new Runnable() {
-						public void run() {
-							Log.d(TAG, "Starting new thread");
-							thread = new Thread(checkResultsLoop);
-							thread.start();
-						}
-					}, 5000);
+				case LoopThread.SAVE:
+					save();
+					break;
+
+				case LoopThread.RESTART:
+
+					if (thread == null || !thread.isAlive()) {
+						handler.postDelayed(new Runnable() {
+							public void run() {
+								Log.d(TAG, "Restarting thread");
+								thread = new Thread(checkResultsLoop);
+								thread.start();
+							}
+						}, 5000);
+					}
+
+					break;
 				}
-				}
 
+				updateGUI();
 			}
+
 		};
-		
+						
 		if (thread == null || !thread.isAlive()){			
 			handler.post(new Runnable() {
 				public void run() {
@@ -193,37 +208,37 @@ public class MainActivity extends DrawerActivity {
 		Intent it = new Intent(this, UploadPictureActivity.class);
 		startActivity(it);
 	}
-
-	private void updateResults() {
-		adapter.clear();
+	
+	private void load(){
 		try{
 			listResults = ResultManager.loadResults(getApplicationContext());
 		}catch(Exception e){
 			listResults = new ArrayList<Result>();
 		}
+	}
+	
+	private void save(){
+		ResultManager.saveResult(getApplicationContext());
+	}
+
+	private void updateGUI() {
+		adapter.clear();		
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}
-
-	// private class CheckResultsTask extends AsyncTask<URL, Integer, String> {
-	//
-	// @Override
-	// protected String doInBackground(URL... url) {
-	// return null;
-	// }
-	//
-	//
-	// @Override
-	// protected void onPostExecute(String result) {
-	// super.onPostExecute(result);
-	// }
-	//
-	// }
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		 updateResults();
+		load();
+		updateGUI();
+	}
+	
+	@Override
+	protected void onDestroy() {		
+		super.onDestroy();
+		if (thread != null)
+			thread.interrupt();
 	}
 
 	@Override
@@ -249,4 +264,5 @@ public class MainActivity extends DrawerActivity {
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
 		return drawerToggle.onOptionsItemSelected(item);
 	}
+	
 }

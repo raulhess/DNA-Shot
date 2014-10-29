@@ -20,10 +20,9 @@ public class ResultManager {
 	public static final String DIRECTORY = "/DNAShot";
 
 	public static void saveResult(Context context) {
-		List<Result> list = MainActivity.listResults;
-		Log.d(MainActivity.TAG, "Jesus");
+		List<Result> list = MainActivity.listResults;		
 		if (isExternalStorageWritable() && list.size() > 0) {
-			Log.d(MainActivity.TAG, "list:" + list.size());
+			Log.d(MainActivity.TAG, "saving list:" + list.size());
 			try {
 				File sdCard = Environment.getExternalStorageDirectory();
 				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
@@ -37,6 +36,7 @@ public class ResultManager {
 				oos.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				Log.d(MainActivity.TAG, "Saving:" + e.getMessage());
 			}
 		}
 	}
@@ -51,6 +51,7 @@ public class ResultManager {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				List<Result> newList = (List<Result>) ois.readObject();
 				ois.close();
+				Log.d(MainActivity.TAG, "loading list:" + newList.size());
 				return newList;
 		}
 		return new ArrayList<Result>();
