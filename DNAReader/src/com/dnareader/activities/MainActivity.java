@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -12,6 +17,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -144,47 +151,9 @@ public class MainActivity extends DrawerActivity {
 		if (ocr ==null)		
 			ocr = new Ocr(getApplicationContext());
 		if (blast == null)
-			blast = new Blast();
-		
-		handler = new Handler() {
-			// Create handleMessage function
-			public void handleMessage(Message msg) {
-				
-				Log.d(TAG, "Message:" + msg.what);
-
-				switch (msg.what) {		
-				
-				case LoopThread.RELOAD_GUI:
-					updateGUI();
-					break;
-					
-				case LoopThread.LOAD:
-					load();
-					break;
-
-				case LoopThread.SAVE:
-					save();
-					break;
-
-				case LoopThread.RESTART:
-
-					if (thread == null || !thread.isAlive()) {
-						handler.postDelayed(new Runnable() {
-							public void run() {
-								Log.d(TAG, "Restarting thread");
-								thread = new Thread(checkResultsLoop);
-								thread.start();
-							}
-						}, 5000);
-					}
-
-					break;
-				}
-
-				updateGUI();
-			}
-
-		};
+			blast = new Blast();		
+		if (handler == null)
+			handler = new ThreadHandler();
 						
 		if (thread == null || !thread.isAlive()){			
 			handler.post(new Runnable() {
@@ -262,7 +231,88 @@ public class MainActivity extends DrawerActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		return drawerToggle.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.action_clear_results:
+			DialogFragment clearResults = new ClearResultsDialogFragment();
+			clearResults.setCancelable(true);
+			clearResults.show(getFragmentManager(), TAG);
+			return true;
+		default:
+			return drawerToggle.onOptionsItemSelected(item);
+		}
 	}
 	
+	public class ClearResultsDialogFragment extends DialogFragment {
+	    @Override
+	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+	        // Use the Builder class for convenient dialog construction
+	        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	        builder.setTitle(R.string.clear_results_title)
+	               .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   ResultManager.clearResults(getApplicationContext());
+	                	   load();
+	                	   updateGUI();
+	                   }
+	               })
+	               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                       // User cancelled the dialog
+	                   }
+	               });
+	        // Create the AlertDialog object and return it
+	        return builder.create();
+	    }
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return true;
+	}
+	
+	private class ThreadHandler extends Handler{
+		
+
+		// Create handleMessage function
+		public void handleMessage(Message msg) {
+			
+			Log.d(TAG, "Message:" + msg.what);
+
+			switch (msg.what) {		
+			
+			case LoopThread.RELOAD_GUI:
+				updateGUI();
+				break;
+				
+			case LoopThread.LOAD:
+				load();
+				break;
+
+			case LoopThread.SAVE:
+				save();
+				break;
+
+			case LoopThread.RESTART:
+
+				if (thread == null || !thread.isAlive()) {
+					handler.postDelayed(new Runnable() {
+						public void run() {
+							Log.d(TAG, "Restarting thread");
+							thread = new Thread(checkResultsLoop);
+							thread.start();
+						}
+					}, 5000);
+				}
+
+				break;
+			}
+
+			updateGUI();
+		}
+
+	
+		
+	}
 }

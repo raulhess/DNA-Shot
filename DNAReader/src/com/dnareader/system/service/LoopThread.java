@@ -73,7 +73,7 @@ public class LoopThread implements Runnable {
 					case Result.BLAST_PROCESSING:
 						
 						String xml = MainActivity.blast.checkBlast(r.getRid());
-
+						Log.d(MainActivity.TAG, xml);
 						if (xml != null) {
 							r.setBlastXML(xml);
 							r.setState(Result.DONE);

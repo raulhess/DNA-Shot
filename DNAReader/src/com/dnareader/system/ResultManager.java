@@ -19,8 +19,8 @@ public class ResultManager {
 	public static final String FILENAME = "results";
 	public static final String DIRECTORY = "/DNAShot";
 
-	public static void saveResult(Context context) {
-		List<Result> list = MainActivity.listResults;		
+	public static void saveResult(Context context) {			
+		List<Result> list = MainActivity.listResults;
 		if (isExternalStorageWritable() && list.size() > 0) {
 			Log.d(MainActivity.TAG, "saving list:" + list.size());
 			try {
@@ -36,7 +36,28 @@ public class ResultManager {
 				oos.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				Log.d(MainActivity.TAG, "Saving:" + e.getMessage());
+			}
+		}
+	}
+	
+	public static void clearResults(Context context){
+		List<Result> list = new ArrayList<Result>();
+		Log.d(MainActivity.TAG, "Clear");
+		if (isExternalStorageWritable()) {
+			try {
+				File sdCard = Environment.getExternalStorageDirectory();
+				File directory = new File(sdCard.getAbsolutePath() + DIRECTORY);
+				directory.mkdirs();
+
+				File file = new File(directory, FILENAME);
+				FileOutputStream fos = new FileOutputStream(file);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				Log.d(MainActivity.TAG, "Saved list with size: " + list.size());
+				oos.writeObject(list);
+				oos.flush();
+				oos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -52,6 +73,7 @@ public class ResultManager {
 				List<Result> newList = (List<Result>) ois.readObject();
 				ois.close();
 				Log.d(MainActivity.TAG, "loading list:" + newList.size());
+				Log.d(MainActivity.TAG, "Loaded list with size: " + newList.size());
 				return newList;
 		}
 		return new ArrayList<Result>();
