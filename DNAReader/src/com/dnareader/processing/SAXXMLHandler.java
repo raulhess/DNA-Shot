@@ -6,6 +6,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
+import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Hit;
 import com.dnareader.data.Hsp;
 
@@ -69,6 +72,7 @@ public class SAXXMLHandler extends DefaultHandler {
 		} else if (qName.equalsIgnoreCase("hsp_query_to")) {
 			tempHsp.setHsp_query_to(tempVal);
 		} else if (qName.equalsIgnoreCase("hsp_hit_from")) {
+			Log.d(MainActivity.TAG, "reached hit from [" + tempVal + "]");
 			tempHsp.setHsp_hit_from(tempVal);
 		} else if (qName.equalsIgnoreCase("hsp_hit_to")) {
 			tempHsp.setHsp_hit_to(tempVal);
@@ -80,6 +84,8 @@ public class SAXXMLHandler extends DefaultHandler {
 			tempHsp.setHsp_hseq(tempVal);
 		} else if (qName.equalsIgnoreCase("hsp_midline")) {
 			tempHsp.setHsp_midline(tempVal);
+		}else if (qName.equalsIgnoreCase("hsp_gaps")) {
+			tempHsp.setHsp_gaps(tempVal);
 		}
 
 	}

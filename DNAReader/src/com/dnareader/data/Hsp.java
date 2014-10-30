@@ -1,7 +1,10 @@
 package com.dnareader.data;
 
-public class Hsp {
+import java.io.Serializable;
 
+public class Hsp implements Serializable{
+	private static final long serialVersionUID = -935674131813014970L;
+	
 	private String hsp_evalue;
 	private String hsp_query_from;
 	private String hsp_query_to;
@@ -11,6 +14,7 @@ public class Hsp {
 	private String hsp_qseq;
 	private String hsp_hseq;
 	private String hsp_midline;
+	private String hsp_gaps;
 
 	public String getHsp_evalue() {
 		return hsp_evalue;
@@ -82,6 +86,14 @@ public class Hsp {
 
 	public void setHsp_midline(String hsp_midline) {
 		this.hsp_midline = hsp_midline;
+	}
+
+	public String getHsp_gaps() {
+		return hsp_gaps;
+	}
+
+	public void setHsp_gaps(String hsp_gaps) {
+		this.hsp_gaps = hsp_gaps;
 	}
 
 }

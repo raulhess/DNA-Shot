@@ -82,13 +82,8 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		case Result.ERROR:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.ERROR));
-			if (list.get(position).isChecked())
 				cellView.setBackgroundColor(context.getResources().getColor(
 						R.color.app_soft_red));
-			else
-				cellView.setBackgroundColor(context.getResources().getColor(
-						R.color.app_red));
-			break;
 		}
 
 		return cellView;

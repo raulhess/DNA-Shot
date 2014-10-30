@@ -1,6 +1,7 @@
 package com.dnareader.system;
 
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
 import com.dnareader.data.Hit;
+import com.dnareader.data.Hsp;
 import com.dnareader.v0.R;
 
 public class HitsAdapter extends BaseExpandableListAdapter {
@@ -34,7 +37,7 @@ public class HitsAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getChildView(int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
-//	    final String childText = (String) getChild(groupPosition, childPosition);
+	    final Hsp hsp = (Hsp)getChild(groupPosition, childPosition);
 	    
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context
@@ -42,9 +45,17 @@ public class HitsAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.hits_item, null);
         }
  
-//        TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
+        TextView evalue = (TextView) convertView.findViewById(R.id.evalue);
+        TextView queryFromTo = (TextView) convertView.findViewById(R.id.query_from_to);
+        TextView hitFromTo = (TextView) convertView.findViewById(R.id.hit_from_to);
+        TextView gaps = (TextView) convertView.findViewById(R.id.gaps);
+        TextView alignLen = (TextView) convertView.findViewById(R.id.align_len);
  
-//        txtListChild.setText(childText);
+        evalue.setText("E-value: "+hsp.getHsp_evalue());
+        queryFromTo.setText("Query interval: " + hsp.getHsp_query_from() + " to " + hsp.getHsp_query_to());
+        hitFromTo.setText("Hit interval: " + hsp.getHsp_hit_from() + " to " + hsp.getHsp_hit_to());
+        gaps.setText("Gaps: "+ hsp.getHsp_gaps());
+        alignLen.setText("Aligh lenght: "+ hsp.getHsp_align_len());
         return convertView;
 		
 	}
