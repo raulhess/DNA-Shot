@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -101,7 +100,7 @@ public class MainActivity extends DrawerActivity {
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
 		try{
-			listResults = ResultManager.loadResults(this);
+			ResultManager.loadResults(this);
 		}catch(Exception e){
 			listResults = new ArrayList<Result>();
 		}
@@ -154,16 +153,11 @@ public class MainActivity extends DrawerActivity {
 			blast = new Blast();		
 		if (handler == null)
 			handler = new ThreadHandler();
-						
-		if (thread == null || !thread.isAlive()){			
-			handler.post(new Runnable() {
-				public void run() {
-					Log.d(TAG, "Starting new thread");
-					thread = new Thread(checkResultsLoop);
-					thread.start();				
-				}
-			});
-		}
+		if(listResults == null)
+			load();
+		
+	
+		startThread();		
 		
 	}
 	
@@ -180,7 +174,7 @@ public class MainActivity extends DrawerActivity {
 	
 	private void load(){
 		try{
-			listResults = ResultManager.loadResults(getApplicationContext());
+			ResultManager.loadResults(getApplicationContext());
 		}catch(Exception e){
 			listResults = new ArrayList<Result>();
 		}
@@ -188,6 +182,18 @@ public class MainActivity extends DrawerActivity {
 	
 	private void save(){
 		ResultManager.saveResult(getApplicationContext());
+	}
+	
+	private void startThread(){
+		if (thread == null || !thread.isAlive()) {
+			handler.postDelayed(new Runnable() {
+				public void run() {
+					Log.d(TAG, "Restarting thread");
+					thread = new Thread(checkResultsLoop);
+					thread.start();
+				}
+			}, 5000);
+		}
 	}
 
 	private void updateGUI() {
@@ -253,6 +259,8 @@ public class MainActivity extends DrawerActivity {
 	                	   ResultManager.clearResults(getApplicationContext());
 	                	   load();
 	                	   updateGUI();
+	                	   if (thread != null)
+	               				thread.interrupt();
 	                   }
 	               })
 	               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -284,25 +292,14 @@ public class MainActivity extends DrawerActivity {
 				updateGUI();
 				break;
 				
-			case LoopThread.LOAD:
-				load();
-				break;
-
 			case LoopThread.SAVE:
 				save();
 				break;
 
 			case LoopThread.RESTART:
-
-				if (thread == null || !thread.isAlive()) {
-					handler.postDelayed(new Runnable() {
-						public void run() {
-							Log.d(TAG, "Restarting thread");
-							thread = new Thread(checkResultsLoop);
-							thread.start();
-						}
-					}, 5000);
-				}
+				load();
+				updateGUI();
+				startThread();
 
 				break;
 			}
