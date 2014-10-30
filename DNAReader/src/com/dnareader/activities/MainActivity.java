@@ -99,11 +99,8 @@ public class MainActivity extends DrawerActivity {
 
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
-		try{
-			ResultManager.loadResults(this);
-		}catch(Exception e){
-			listResults = new ArrayList<Result>();
-		}
+		if(listResults == null)
+			load();
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);
 		results.setOnItemClickListener(new OnItemClickListener() {
@@ -153,8 +150,7 @@ public class MainActivity extends DrawerActivity {
 			blast = new Blast();		
 		if (handler == null)
 			handler = new ThreadHandler();
-		if(listResults == null)
-			load();
+		
 		
 	
 		startThread();		
@@ -296,11 +292,9 @@ public class MainActivity extends DrawerActivity {
 				save();
 				break;
 
-			case LoopThread.RESTART:
-				load();
+			case LoopThread.RESTART:				
 				updateGUI();
 				startThread();
-
 				break;
 			}
 

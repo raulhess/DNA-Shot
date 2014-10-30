@@ -30,10 +30,8 @@ public class LoopThread implements Runnable {
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();	
 		
 		if (networkInfo != null && networkInfo.isConnected()) {
-			try {
-				List<Result> listResults;
-				listResults = MainActivity.listResults;
-				for (Result r : listResults) {
+			try {				
+				for (Result r : MainActivity.listResults) {
 					switch (r.getState()) {
 					case Result.UNPROCESSED:
 
