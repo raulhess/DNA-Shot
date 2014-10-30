@@ -47,10 +47,12 @@ public class LoopThread implements Runnable {
 						if (text.length() > 5) {
 							r.setOcrText(text);
 							r.setState(Result.OCR_PROCESSED);
+							Log.d(MainActivity.TAG, "OCR Processed");
 						} else {
 							r.setState(Result.ERROR);
 						}
 						
+						MainActivity.listResults = listResults;
 						MainActivity.handler.sendEmptyMessage(SAVE);
 						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 
@@ -64,7 +66,9 @@ public class LoopThread implements Runnable {
 						String rid = MainActivity.blast.startBlast(r.getOcrText());						
 						r.setRid(rid);
 						r.setState(Result.BLAST_PROCESSING);
+						Log.d(MainActivity.TAG, "Blast request sent");
 						
+						MainActivity.listResults = listResults;						
 						MainActivity.handler.sendEmptyMessage(SAVE);
 						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 
@@ -72,15 +76,17 @@ public class LoopThread implements Runnable {
 
 					case Result.BLAST_PROCESSING:
 						
-						String xml = MainActivity.blast.checkBlast(r.getRid());
-						Log.d(MainActivity.TAG, xml);
+						String xml = MainActivity.blast.checkBlast(r.getRid());						
 						if (xml != null) {
+							Log.d(MainActivity.TAG, xml);
 							r.setBlastXML(xml);
 							r.setState(Result.DONE);
+							Log.d(MainActivity.TAG, "Blast XML received");
 						} else {
 							r.setState(Result.ERROR);
 						}
 						
+						MainActivity.listResults = listResults;
 						MainActivity.handler.sendEmptyMessage(SAVE);
 						MainActivity.handler.sendEmptyMessage(RELOAD_GUI);
 

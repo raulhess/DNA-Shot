@@ -276,10 +276,8 @@ public class MainActivity extends DrawerActivity {
 		
 
 		// Create handleMessage function
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg) {	
 			
-			Log.d(TAG, "Message:" + msg.what);
-
 			switch (msg.what) {		
 			
 			case LoopThread.RELOAD_GUI:
