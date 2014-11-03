@@ -63,10 +63,10 @@
     <string name="warning_waiting">O item selecionado ainda está sendo processado no nosso servidor</string>
     
     <string name="UNPROCESSED">Processamento não iniciado</string>
-    <string name="OCR_PROCESSING">OCR em andamento</string>
-    <string name="OCR_PROCESSED">OCR terminou</string>
-    <string name="BLAST_PROCESSING">Consulta ao BLAST iniciada</string>
-    <string name="BLAST_PROCESSED">Consulta ao BLAST terminada</string>
+    <string name="OCR_STARTED">OCR em andamento</string>
+    <string name="OCR_FINISHED">OCR terminou</string>
+    <string name="BLAST_STARTED">Consulta ao BLAST iniciada</string>
+    <string name="BLAST_FINISHED">Consulta ao BLAST terminada</string>
     <string name="DONE">Pronto</string>
     <string name="ERROR">Ocorreu um erro de processamento</string>    
 

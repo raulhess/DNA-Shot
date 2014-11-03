@@ -190,6 +190,7 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	private void updateGUI() {
+		Log.d(TAG, "Updating GUI");	
 		adapter.clear();		
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
@@ -287,12 +288,7 @@ public class MainActivity extends DrawerActivity {
 				
 			case LoopThread.SAVE:
 				save();
-				break;
-
-			case LoopThread.RESTART:				
-				updateGUI();
-				startThread();
-				break;
+				break;		
 			}
 
 			updateGUI();
