@@ -1,7 +1,5 @@
 package com.dnareader.system.service;
 
-import java.lang.reflect.WildcardType;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,9 +11,8 @@ import com.dnareader.data.Result;
 
 public class LoopThread implements Runnable {
 	
-	public static final int SAVE = 0;	
-	public static final int RESTART = 1;	
-	public static final int RELOAD_GUI = 2;	
+	public static final int SAVE = 0;		
+	public static final int RELOAD_GUI = 1;		
 
 	Context context;
 
@@ -30,17 +27,24 @@ public class LoopThread implements Runnable {
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		Handler handler = MainActivity.handler;
+		handler.sendEmptyMessage(RELOAD_GUI);
 		
 		boolean done = true;	
 		
 		do {	
+			done = true;
+			Log.d(MainActivity.TAG, "Looping...");
 			try {				
 				for (Result r : MainActivity.listResults) {
 					if (r.getState() != Result.DONE && r.getState() != Result.ERROR){
 						done = false;
 					}
+					
+					Log.d(MainActivity.TAG, "Trying: " + r.getId() + " State:" + r.getState());
+					
 					switch (r.getState()) {
 					case Result.UNPROCESSED:
+					case Result.OCR_STARTED:
 
 						r.setState(Result.OCR_STARTED);
 						handler.sendEmptyMessage(RELOAD_GUI);
@@ -92,10 +96,9 @@ public class LoopThread implements Runnable {
 							r.setBlastXML(xml);
 							r.setState(Result.DONE);
 							Log.d(MainActivity.TAG, "Blast XML received");
-						} 
+							handler.sendEmptyMessage(SAVE);
+						} 												
 						
-						
-						handler.sendEmptyMessage(SAVE);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
 						} else {
@@ -119,7 +122,7 @@ public class LoopThread implements Runnable {
 			Log.d(MainActivity.TAG, "Done processing.");
 		}
 		
-		}while(!done);
+		}while(!done && !MainActivity.listResults.isEmpty());
 		
 	}
 
