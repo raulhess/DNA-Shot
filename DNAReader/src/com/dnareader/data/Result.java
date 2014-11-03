@@ -5,10 +5,12 @@ import java.util.Date;
 
 public class Result implements Serializable{
 	public static final int UNPROCESSED = 0;
-	public static final int OCR_PROCESSING = 1;
-	public static final int OCR_PROCESSED = 2;
-	public static final int BLAST_PROCESSING =3;
-	public static final int BLAST_PROCESSED = 4;
+	public static final int OCR_STARTED = 1;
+	public static final int OCR_FINISHED = 2;
+	public static final int BLAST_STARTED =3;
+	public static final int BLAST_FINISHED = 4;
+	public static final int PREPROCESSING_STARTED = 5;
+	public static final int PREPROCESSING_FINISHED = 6;
 	public static final int DONE = 10;
 	public static final int ERROR = -1;
 	

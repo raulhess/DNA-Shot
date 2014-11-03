@@ -77,7 +77,7 @@ public class Blast {
 	}
 
 	public static ArrayList<Hit> parseBlastXML(String xml) {
-		ArrayList<Hit> hits = null;
+		ArrayList<Hit> hits = null;		
 		try {
 			SAXParserFactory SAXfactory = SAXParserFactory.newInstance();
 			SAXParser SAXParserObj = SAXfactory.newSAXParser();

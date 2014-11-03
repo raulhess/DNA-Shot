@@ -53,8 +53,8 @@ public class MainActivity extends DrawerActivity {
 	public static Blast blast;
 
 	public static Handler handler;
-	Runnable checkResultsLoop;
-	private Thread thread;
+	static Runnable checkResultsLoop;
+	private static Thread thread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,18 +140,15 @@ public class MainActivity extends DrawerActivity {
 			}
 
 		});
-		// notification test
 		
-		checkResultsLoop = new LoopThread(getApplicationContext());		
-		
+		if (checkResultsLoop == null)
+			checkResultsLoop = new LoopThread(getApplicationContext());				
 		if (ocr ==null)		
 			ocr = new Ocr(getApplicationContext());
 		if (blast == null)
 			blast = new Blast();		
 		if (handler == null)
-			handler = new ThreadHandler();
-		
-		
+			handler = new ThreadHandler();		
 	
 		startThread();		
 		
@@ -180,12 +177,12 @@ public class MainActivity extends DrawerActivity {
 		ResultManager.saveResult(getApplicationContext());
 	}
 	
-	private void startThread(){
-		if (thread == null || !thread.isAlive()) {
+	public static void startThread(){	
+		if ((thread == null) || (thread.getState() == Thread.State.TERMINATED)) {		
+			thread = new Thread(checkResultsLoop);
 			handler.postDelayed(new Runnable() {
 				public void run() {
-					Log.d(TAG, "Restarting thread");
-					thread = new Thread(checkResultsLoop);
+					Log.d(TAG, "Restarting thread");					
 					thread.start();
 				}
 			}, 5000);

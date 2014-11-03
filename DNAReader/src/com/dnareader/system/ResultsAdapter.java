@@ -50,21 +50,21 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
 			break;
-		case Result.OCR_PROCESSING:
+		case Result.OCR_STARTED:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.OCR_PROCESSING));
+					+ context.getResources().getString(R.string.OCR_STARTED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
 			break;	
-		case Result.OCR_PROCESSED:
+		case Result.OCR_FINISHED:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.OCR_PROCESSED));
+					+ context.getResources().getString(R.string.OCR_FINISHED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
 			break;		
-		case Result.BLAST_PROCESSING:
+		case Result.BLAST_STARTED:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.BLAST_PROCESSING));
+					+ context.getResources().getString(R.string.BLAST_STARTED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
 			break;		

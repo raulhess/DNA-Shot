@@ -58,6 +58,7 @@ public class TakePictureActivity extends DrawerActivity {
 				ResultManager.saveResult(getApplicationContext());
 				Log.d(MainActivity.TAG, "Picture captured! " + list.size() );
 				pictureTaken();
+				MainActivity.startThread();
 			}catch (Exception e){
 				e.printStackTrace();
 			}
