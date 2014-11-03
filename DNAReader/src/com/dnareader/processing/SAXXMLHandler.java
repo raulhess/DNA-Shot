@@ -67,16 +67,15 @@ public class SAXXMLHandler extends DefaultHandler {
 			tempHit.getHsps().add(tempHsp);
 		} else if (qName.equalsIgnoreCase("hsp_evalue")) {
 			tempHsp.setHsp_evalue(tempVal);
-		} else if (qName.equalsIgnoreCase("hsp_query_from")) {
+		} else if (qName.equalsIgnoreCase("hsp_query-from")) {
 			tempHsp.setHsp_query_from(tempVal);
-		} else if (qName.equalsIgnoreCase("hsp_query_to")) {
+		} else if (qName.equalsIgnoreCase("hsp_query-to")) {
 			tempHsp.setHsp_query_to(tempVal);
-		} else if (qName.equalsIgnoreCase("hsp_hit_from")) {
-			Log.d(MainActivity.TAG, "reached hit from [" + tempVal + "]");
+		} else if (qName.equalsIgnoreCase("hsp_hit-from")) {		
 			tempHsp.setHsp_hit_from(tempVal);
-		} else if (qName.equalsIgnoreCase("hsp_hit_to")) {
+		} else if (qName.equalsIgnoreCase("hsp_hit-to")) {
 			tempHsp.setHsp_hit_to(tempVal);
-		} else if (qName.equalsIgnoreCase("hsp_align_len")) {
+		} else if (qName.equalsIgnoreCase("hsp_align-len")) {
 			tempHsp.setHsp_align_len(tempVal);
 		} else if (qName.equalsIgnoreCase("hsp_qseq")) {
 			tempHsp.setHsp_qseq(tempVal);
