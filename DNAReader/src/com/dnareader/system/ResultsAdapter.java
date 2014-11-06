@@ -23,7 +23,7 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		super(context, R.layout.result_cell, list);
 		this.context = context;
 		this.list = list;
-		
+
 	}
 
 	@SuppressLint({ "ViewHolder", "InflateParams" })
@@ -32,8 +32,10 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		LayoutInflater inflater = context.getLayoutInflater();
 		View cellView = inflater.inflate(R.layout.result_cell, null, true);
 		ImageView img = (ImageView) cellView.findViewById(R.id.img);
-		img.setImageBitmap(BitmapFactory.decodeByteArray(list.get(position)
-				.getThumbnail(), 0, list.get(position).getThumbnail().length));
+		if (list.get(position).getThumbnail() != null)
+			img.setImageBitmap(BitmapFactory.decodeByteArray(list.get(position)
+					.getThumbnail(), 0,
+					list.get(position).getThumbnail().length));
 		TextView id = (TextView) cellView.findViewById(R.id.id);
 		id.setText(context.getResources().getString(R.string.result_title)
 				+ list.get(position).getId());
@@ -45,43 +47,42 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		switch (list.get(position).getState()) {
 		case Result.UNPROCESSED:
 			status.setText("Status: "
-					+ context.getResources()
-							.getString(R.string.UNPROCESSED));
+					+ context.getResources().getString(R.string.UNPROCESSED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;			
+			break;
 		case Result.PREPROCESSING_STARTED:
 			status.setText("Status: "
-					+ context.getResources()
-							.getString(R.string.PREPROCESSING_STARTED));
+					+ context.getResources().getString(
+							R.string.PREPROCESSING_STARTED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;			
+			break;
 		case Result.PREPROCESSING_FINISHED:
 			status.setText("Status: "
-					+ context.getResources()
-							.getString(R.string.PREPROCESSING_FINISHED));
+					+ context.getResources().getString(
+							R.string.PREPROCESSING_FINISHED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;			
+			break;
 		case Result.OCR_STARTED:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.OCR_STARTED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;	
+			break;
 		case Result.OCR_FINISHED:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.OCR_FINISHED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;		
+			break;
 		case Result.BLAST_STARTED:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.BLAST_STARTED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;		
+			break;
 		case Result.DONE:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.DONE));
@@ -92,12 +93,12 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 				cellView.setBackgroundColor(context.getResources().getColor(
 						R.color.app_blue));
 			break;
-			
+
 		case Result.ERROR:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.ERROR));
-				cellView.setBackgroundColor(context.getResources().getColor(
-						R.color.app_soft_red));
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_soft_red));
 		}
 
 		return cellView;

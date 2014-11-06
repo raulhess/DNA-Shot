@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Hit {
 
+	private int result_id;
 	private String hit_id;
 	private String hit_def;
 	private String hit_len;
@@ -11,6 +12,14 @@ public class Hit {
 
 	public Hit() {
 		hsps = new ArrayList<Hsp>();
+	}
+
+	public int getResult_id() {
+		return result_id;
+	}
+
+	public void setResult_id(int result_id) {
+		this.result_id = result_id;
 	}
 
 	public String getHit_id() {

@@ -1,5 +1,9 @@
 package com.dnareader.activities;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +14,15 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,6 +47,8 @@ import com.dnareader.v0.R;
 public class MainActivity extends DrawerActivity {
 	public static final String TAG = "DNAReader";
 	public static final String SETTINGS_FILE = "dna-reader-preferences";
+	public static final int REQUEST_IMAGE_CAPTURE = 0;
+	Uri fileUri = null;
 	public static Typeface caviarDreams;
 
 	private ActionBarDrawerToggle drawerToggle;
@@ -48,7 +59,7 @@ public class MainActivity extends DrawerActivity {
 	public static List<Result> listResults;
 	private ListView results;
 	private ResultsAdapter adapter;
-	
+
 	public static Ocr ocr;
 	public static Blast blast;
 
@@ -99,7 +110,7 @@ public class MainActivity extends DrawerActivity {
 
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
-		if(listResults == null)
+		if (listResults == null)
 			load();
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);
@@ -140,49 +151,148 @@ public class MainActivity extends DrawerActivity {
 			}
 
 		});
-		
+
 		if (checkResultsLoop == null)
-			checkResultsLoop = new LoopThread(getApplicationContext());				
-		if (ocr ==null)		
+			checkResultsLoop = new LoopThread(getApplicationContext());
+		if (ocr == null)
 			ocr = new Ocr(getApplicationContext());
 		if (blast == null)
-			blast = new Blast();		
+			blast = new Blast();
 		if (handler == null)
-			handler = new ThreadHandler();		
-	
-		startThread();		
-		
+			handler = new ThreadHandler();
+
+		startThread();
+
 	}
-	
-	
+
 	public void goTakePicture(View v) {
-		Intent it = new Intent(this, TakePictureActivity.class);
-		startActivity(it);
+		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+		File file = new File(Environment.getExternalStorageDirectory()
+				+ File.separator + "image.jpg");
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+		startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 	}
 
 	public void goUploadPicture(View v) {
 		Intent it = new Intent(this, UploadPictureActivity.class);
 		startActivity(it);
 	}
-	
-	private void load(){
-		try{
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+			File file = new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "image.jpg");
+			Bitmap bitmap = decodeSampledBitmapFromFile(file.getAbsolutePath(),
+					1000, 700);
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			byte[] byteArray = stream.toByteArray();
+			onPictureTaken(byteArray);
+			Log.d(TAG, "Bitmap: " + byteArray.toString());
+
+		}
+	}
+
+	public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth,
+			int reqHeight) { // BEST QUALITY MATCH
+
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, options);
+
+		// Calculate inSampleSize, Raw height and width of image
+		final int height = options.outHeight;
+		final int width = options.outWidth;
+		options.inPreferredConfig = Bitmap.Config.RGB_565;
+		int inSampleSize = 1;
+
+		if (height > reqHeight) {
+			inSampleSize = Math.round((float) height / (float) reqHeight);
+		}
+		int expectedWidth = width / inSampleSize;
+
+		if (expectedWidth > reqWidth) {
+			// if(Math.round((float)width / (float)reqWidth) > inSampleSize) //
+			// If bigger SampSize..
+			inSampleSize = Math.round((float) width / (float) reqWidth);
+		}
+
+		options.inSampleSize = inSampleSize;
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+
+		return BitmapFactory.decodeFile(path, options);
+	}
+
+	public byte[] getBytes(InputStream inputStream) throws IOException {
+		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		int bufferSize = 1024;
+		byte[] buffer = new byte[bufferSize];
+
+		int len = 0;
+		while ((len = inputStream.read(buffer)) != -1) {
+			byteBuffer.write(buffer, 0, len);
+		}
+		return byteBuffer.toByteArray();
+	}
+
+	private void onPictureTaken(byte[] data) {
+		if (data != null) {
+			Result r = new Result();
+			if (listResults.size() < 9) {
+				r.setId("000" + (listResults.size() + 1));
+			} else if (listResults.size() < 99) {
+				r.setId("00" + (listResults.size() + 1));
+			} else if (listResults.size() < 999) {
+				r.setId("0" + (listResults.size() + 1));
+			} else {
+				r.setId("1000");
+			}
+			r.setState(Result.UNPROCESSED);
+			r.setThumbnail(getThumbnail(data));
+			r.setImage(data);
+			r.setChecked(false);
+			listResults.add(0, r);
+			ResultManager.saveResult(getApplicationContext());
+			MainActivity.startThread();
+		}
+	}
+
+	public byte[] getThumbnail(byte[] originalData) {
+		try {
+			Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0,
+					originalData.length);
+			Bitmap bmpReduced = Bitmap.createScaledBitmap(bmp, 100, 100, false);
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bmpReduced.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			byte[] byteArray = stream.toByteArray();
+			return byteArray;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private void load() {
+		try {
 			ResultManager.loadResults(getApplicationContext());
-		}catch(Exception e){
+		} catch (Exception e) {
 			listResults = new ArrayList<Result>();
 		}
 	}
-	
-	private void save(){
+
+	private void save() {
 		ResultManager.saveResult(getApplicationContext());
 	}
-	
-	public static void startThread(){	
-		if ((thread == null) || (thread.getState() == Thread.State.TERMINATED)) {		
+
+	public static void startThread() {
+		if ((thread == null) || (thread.getState() == Thread.State.TERMINATED)) {
 			thread = new Thread(checkResultsLoop);
 			handler.postDelayed(new Runnable() {
 				public void run() {
-					Log.d(TAG, "Restarting thread");					
+					Log.d(TAG, "Restarting thread");
 					thread.start();
 				}
 			}, 5000);
@@ -190,21 +300,21 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	private void updateGUI() {
-		Log.d(TAG, "Updating GUI");	
-		adapter.clear();		
+		Log.d(TAG, "Updating GUI");
+		adapter.clear();
 		adapter.addAll(listResults);
 		adapter.notifyDataSetChanged();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		load();
 		updateGUI();
 	}
-	
+
 	@Override
-	protected void onDestroy() {		
+	protected void onDestroy() {
 		super.onDestroy();
 		if (thread != null)
 			thread.interrupt();
@@ -241,60 +351,62 @@ public class MainActivity extends DrawerActivity {
 			return drawerToggle.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	public class ClearResultsDialogFragment extends DialogFragment {
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	        // Use the Builder class for convenient dialog construction
-	        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	        builder.setTitle(R.string.clear_results_title)
-	               .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   ResultManager.clearResults(getApplicationContext());
-	                	   load();
-	                	   updateGUI();
-	                	   if (thread != null)
-	               				thread.interrupt();
-	                   }
-	               })
-	               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                       // User cancelled the dialog
-	                   }
-	               });
-	        // Create the AlertDialog object and return it
-	        return builder.create();
-	    }
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the Builder class for convenient dialog construction
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(R.string.clear_results_title)
+					.setPositiveButton(R.string.confirm,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									ResultManager
+											.clearResults(getApplicationContext());
+									load();
+									updateGUI();
+									if (thread != null)
+										thread.interrupt();
+								}
+							})
+					.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// User cancelled the dialog
+								}
+							});
+			// Create the AlertDialog object and return it
+			return builder.create();
+		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
 	}
-	
-	private class ThreadHandler extends Handler{
-		
+
+	private class ThreadHandler extends Handler {
 
 		// Create handleMessage function
-		public void handleMessage(Message msg) {	
-			
-			switch (msg.what) {		
-			
+		public void handleMessage(Message msg) {
+
+			switch (msg.what) {
+
 			case LoopThread.RELOAD_GUI:
 				updateGUI();
 				break;
-				
+
 			case LoopThread.SAVE:
 				save();
-				break;		
+				break;
 			}
 
 			updateGUI();
 		}
 
-	
-		
 	}
 }
