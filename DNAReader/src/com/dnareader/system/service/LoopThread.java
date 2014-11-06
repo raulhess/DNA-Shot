@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
+import com.dnareader.processing.PreProcessing;
 
 public class LoopThread implements Runnable {
 	
@@ -43,14 +44,38 @@ public class LoopThread implements Runnable {
 					Log.d(MainActivity.TAG, "Trying: " + r.getId() + " State:" + r.getState());
 					
 					switch (r.getState()) {
+					
 					case Result.UNPROCESSED:
+					case Result.PREPROCESSING_STARTED:
+						
+
+
+						r.setState(Result.PREPROCESSING_STARTED);
+						handler.sendEmptyMessage(RELOAD_GUI);
+						
+						PreProcessing p = new PreProcessing();
+						
+						byte[] threshold = p.adaptativeThreshold(r.getImage());
+						
+						r.setPreProcessedimage(threshold);
+						
+						Thread.sleep(1000);
+						
+						r.setState(Result.PREPROCESSING_FINISHED);
+						handler.sendEmptyMessage(SAVE);
+						handler.sendEmptyMessage(RELOAD_GUI);
+						
+						
+						break;
+					
+					case Result.PREPROCESSING_FINISHED:
 					case Result.OCR_STARTED:
 
 						r.setState(Result.OCR_STARTED);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
-						String text = MainActivity.ocr.doOcr(r.getImage());
-						if (text.length() > 10) {
+						String text = MainActivity.ocr.doOcr(r.getPreProcessedimage());
+						if (text.length() > 20) {
 							r.setOcrText(text);
 							r.setState(Result.OCR_FINISHED);
 							Log.d(MainActivity.TAG, "OCR Processed");
@@ -116,6 +141,11 @@ public class LoopThread implements Runnable {
 			} catch (Exception e) {				
 				Log.e(MainActivity.TAG,	"Error checking results: " + e.getMessage());
 				e.printStackTrace();
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {					
+					e1.printStackTrace();
+				}
 			}
 		
 		if (done){

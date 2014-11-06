@@ -49,7 +49,21 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 							.getString(R.string.UNPROCESSED));
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_white));
-			break;
+			break;			
+		case Result.PREPROCESSING_STARTED:
+			status.setText("Status: "
+					+ context.getResources()
+							.getString(R.string.PREPROCESSING_STARTED));
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_white));
+			break;			
+		case Result.PREPROCESSING_FINISHED:
+			status.setText("Status: "
+					+ context.getResources()
+							.getString(R.string.PREPROCESSING_FINISHED));
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_white));
+			break;			
 		case Result.OCR_STARTED:
 			status.setText("Status: "
 					+ context.getResources().getString(R.string.OCR_STARTED));

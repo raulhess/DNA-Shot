@@ -18,6 +18,7 @@ public class Result implements Serializable{
 	private String id;
 	private byte[] thumbnail;
 	private byte[] image;
+	private byte[] PreProcessedimage;
 	private boolean checked;
 	private Date date;
 	private String content;
@@ -104,6 +105,14 @@ public class Result implements Serializable{
 
 	public void setRid(String rid) {
 		this.rid = rid;
+	}
+
+	public byte[] getPreProcessedimage() {
+		return PreProcessedimage;
+	}
+
+	public void setPreProcessedimage(byte[] preProcessedimage) {
+		PreProcessedimage = preProcessedimage;
 	}
 	
 }
