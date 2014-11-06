@@ -9,6 +9,7 @@ import android.util.Log;
 import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
 import com.dnareader.processing.PreProcessing;
+import com.googlecode.leptonica.android.Pix;
 
 public class LoopThread implements Runnable {
 	
@@ -48,23 +49,17 @@ public class LoopThread implements Runnable {
 					case Result.UNPROCESSED:
 					case Result.PREPROCESSING_STARTED:
 						
-
-
 						r.setState(Result.PREPROCESSING_STARTED);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
-						PreProcessing p = new PreProcessing();
-						
-						byte[] threshold = p.adaptativeThreshold(r.getImage());
-						
-						r.setPreProcessedimage(threshold);
-						
-						Thread.sleep(1000);
+						PreProcessing p = new PreProcessing();						
+						Pix threshold = p.adaptativeThreshold(r.getImage());						
+						byte[] deskew = p.deskew(threshold);						
+						r.setPreProcessedimage(deskew);								
 						
 						r.setState(Result.PREPROCESSING_FINISHED);
 						handler.sendEmptyMessage(SAVE);
-						handler.sendEmptyMessage(RELOAD_GUI);
-						
+						handler.sendEmptyMessage(RELOAD_GUI);						
 						
 						break;
 					
