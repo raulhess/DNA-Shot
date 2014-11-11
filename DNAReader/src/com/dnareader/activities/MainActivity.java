@@ -112,6 +112,7 @@ public class MainActivity extends DrawerActivity {
 		results = (ListView) findViewById(R.id.menu_result_list);
 		if (listResults == null)
 			load();
+		Log.d(TAG, "List state " + listResults.size());
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);
 		results.setOnItemClickListener(new OnItemClickListener() {
@@ -135,7 +136,8 @@ public class MainActivity extends DrawerActivity {
 					break;
 				case Result.DONE:
 					target.setChecked(true);
-					ResultManager.saveResult(getApplicationContext());
+					ResultManager.setChecked(getApplicationContext(),
+							target.getLongId());
 					Intent it = new Intent(getApplicationContext(),
 							ResultActivity.class);
 					Bundle bundle = new Bundle();
@@ -166,11 +168,8 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void goTakePicture(View v) {
-		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		File file = new File(Environment.getExternalStorageDirectory()
-				+ File.separator + "image.jpg");
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-		startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+		Intent it = new Intent(this, TakePictureActivity.class);
+		startActivity(it);
 	}
 
 	public void goUploadPicture(View v) {
@@ -178,113 +177,20 @@ public class MainActivity extends DrawerActivity {
 		startActivity(it);
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-			File file = new File(Environment.getExternalStorageDirectory()
-					+ File.separator + "image.jpg");
-			Bitmap bitmap = decodeSampledBitmapFromFile(file.getAbsolutePath(),
-					1000, 700);
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-			byte[] byteArray = stream.toByteArray();
-			onPictureTaken(byteArray);
-			Log.d(TAG, "Bitmap: " + byteArray.toString());
-
-		}
-	}
-
-	public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth,
-			int reqHeight) { // BEST QUALITY MATCH
-
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(path, options);
-
-		// Calculate inSampleSize, Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		options.inPreferredConfig = Bitmap.Config.RGB_565;
-		int inSampleSize = 1;
-
-		if (height > reqHeight) {
-			inSampleSize = Math.round((float) height / (float) reqHeight);
-		}
-		int expectedWidth = width / inSampleSize;
-
-		if (expectedWidth > reqWidth) {
-			// if(Math.round((float)width / (float)reqWidth) > inSampleSize) //
-			// If bigger SampSize..
-			inSampleSize = Math.round((float) width / (float) reqWidth);
-		}
-
-		options.inSampleSize = inSampleSize;
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-
-		return BitmapFactory.decodeFile(path, options);
-	}
-
-	public byte[] getBytes(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		int bufferSize = 1024;
-		byte[] buffer = new byte[bufferSize];
-
-		int len = 0;
-		while ((len = inputStream.read(buffer)) != -1) {
-			byteBuffer.write(buffer, 0, len);
-		}
-		return byteBuffer.toByteArray();
-	}
-
-	private void onPictureTaken(byte[] data) {
-		if (data != null) {
-			Result r = new Result();
-			if (listResults.size() < 9) {
-				r.setId("000" + (listResults.size() + 1));
-			} else if (listResults.size() < 99) {
-				r.setId("00" + (listResults.size() + 1));
-			} else if (listResults.size() < 999) {
-				r.setId("0" + (listResults.size() + 1));
-			} else {
-				r.setId("1000");
-			}
-			r.setState(Result.UNPROCESSED);
-			r.setThumbnail(getThumbnail(data));
-			r.setImage(data);
-			r.setChecked(false);
-			listResults.add(0, r);
-			ResultManager.saveResult(getApplicationContext());
-			MainActivity.startThread();
-		}
-	}
-
-	public byte[] getThumbnail(byte[] originalData) {
-		try {
-			Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0,
-					originalData.length);
-			Bitmap bmpReduced = Bitmap.createScaledBitmap(bmp, 100, 100, false);
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			bmpReduced.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-			byte[] byteArray = stream.toByteArray();
-			return byteArray;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	private void load() {
 		try {
-			ResultManager.loadResults(getApplicationContext());
+			listResults = ResultManager.loadResults(getApplicationContext());
 		} catch (Exception e) {
+			e.printStackTrace();
 			listResults = new ArrayList<Result>();
 		}
 	}
 
-	private void save() {
-		ResultManager.saveResult(getApplicationContext());
+	private void saveHits() {
+		for (Result r : listResults){
+			if (r.getHits() != null)
+				ResultManager.addHits(this, r.getLongId(), r.getHits());
+		}
 	}
 
 	public static void startThread() {
@@ -401,7 +307,7 @@ public class MainActivity extends DrawerActivity {
 				break;
 
 			case LoopThread.SAVE:
-				save();
+				saveHits();
 				break;
 			}
 

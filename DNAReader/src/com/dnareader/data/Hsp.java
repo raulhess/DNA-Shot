@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Hsp implements Serializable{
 	private static final long serialVersionUID = -935674131813014970L;
 	
+	private long hitId;
 	private String hsp_evalue;
 	private String hsp_query_from;
 	private String hsp_query_to;
@@ -95,5 +96,15 @@ public class Hsp implements Serializable{
 	public void setHsp_gaps(String hsp_gaps) {
 		this.hsp_gaps = hsp_gaps;
 	}
+
+	public long getHitId() {
+		return hitId;
+	}
+
+	public void setHitId(long hitId) {
+		this.hitId = hitId;
+	}
+	
+	
 
 }

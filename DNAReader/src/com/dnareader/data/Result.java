@@ -2,6 +2,7 @@ package com.dnareader.data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Result implements Serializable{
 	public static final int UNPROCESSED = 0;
@@ -15,7 +16,7 @@ public class Result implements Serializable{
 	public static final int ERROR = -1;
 	
 	private static final long serialVersionUID = 982757938298536428L;
-	private String id;
+	private long id;
 	private byte[] thumbnail;
 	private byte[] image;
 	private byte[] PreProcessedimage;
@@ -26,6 +27,7 @@ public class Result implements Serializable{
 	private String blastXML;		
 	private int state = 0;
 	private String rid; // Blast request id
+	private List<Hit> hits;
 	
 	public String getBlastXML() {
 		return blastXML;
@@ -48,10 +50,14 @@ public class Result implements Serializable{
 	}
 
 	public String getId() {
+		return id + "";
+	}
+	
+	public long getLongId() {
 		return id;
 	}
 	
-	public void setId(String id){
+	public void setId(long id){
 		this.id = id;
 	}
 	
@@ -114,5 +120,15 @@ public class Result implements Serializable{
 	public void setPreProcessedimage(byte[] preProcessedimage) {
 		PreProcessedimage = preProcessedimage;
 	}
+
+	public List<Hit> getHits() {
+		return hits;
+	}
+
+	public void setHits(List<Hit> hits) {
+		this.hits = hits;
+	}
+	
+	
 	
 }

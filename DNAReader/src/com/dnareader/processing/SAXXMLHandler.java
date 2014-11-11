@@ -6,9 +6,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-
-import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Hit;
 import com.dnareader.data.Hsp;
 
@@ -52,13 +49,15 @@ public class SAXXMLHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("Hit")) {
 			// add it to the list
 			hits.add(tempHit);
-		} else if (qName.equalsIgnoreCase("Hit_id")) {
-			tempHit.setHit_id(tempVal);
-		} else if (qName.equalsIgnoreCase("Hit_def")) {
+		}  else if (qName.equalsIgnoreCase("Hit_def")) {
 			tempHit.setHit_def(tempVal);
 		} else if (qName.equalsIgnoreCase("Hit_len")) {
 			tempHit.setHit_len(tempVal);
 		}
+		
+//		else if (qName.equalsIgnoreCase("Hit_id")) {
+//		tempHit.setHit_id(tempVal);
+//	}
 
 		// Hsp
 

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
+import com.dnareader.processing.Blast;
 import com.dnareader.processing.PreProcessing;
 import com.googlecode.leptonica.android.Pix;
 
@@ -114,6 +115,7 @@ public class LoopThread implements Runnable {
 						if (xml != null) {
 							Log.d(MainActivity.TAG, xml);
 							r.setBlastXML(xml);
+							r.setHits(Blast.parseBlastXML(xml));
 							r.setState(Result.DONE);
 							Log.d(MainActivity.TAG, "Blast XML received");
 							handler.sendEmptyMessage(SAVE);

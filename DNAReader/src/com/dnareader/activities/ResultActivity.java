@@ -2,26 +2,21 @@ package com.dnareader.activities;
 
 import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dnareader.data.Hit;
 import com.dnareader.data.Result;
-import com.dnareader.processing.Blast;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.HitsAdapter;
 import com.dnareader.v0.R;
 
 public class ResultActivity extends DrawerActivity {
 	private TextView time;
-	private ImageView preDebug;
 	private ExpandableListView content;
 	private HitsAdapter adapter;
 
@@ -34,7 +29,6 @@ public class ResultActivity extends DrawerActivity {
 		Bundle bundle = getIntent().getExtras();
 
 		time = (TextView) findViewById(R.id.result_time);
-		preDebug = (ImageView) findViewById(R.id.preImageDebug);
 		content = (ExpandableListView) findViewById(R.id.expandable_list);
 
 		if (bundle != null) {
@@ -45,10 +39,10 @@ public class ResultActivity extends DrawerActivity {
 				time.setText(getResources().getString(R.string.result_date) + target.getDate());
 //				results.setText(bundle.getString("content"));
 				
-				Bitmap bmp=BitmapFactory.decodeByteArray(target.getPreProcessedimage(),0,target.getPreProcessedimage().length);
-				preDebug.setImageBitmap(bmp);
+//				Bitmap bmp=BitmapFactory.decodeByteArray(target.getPreProcessedimage(),0,target.getPreProcessedimage().length);
+//				preDebug.setImageBitmap(bmp);
 				
-				List<Hit> hits = Blast.parseBlastXML(target.getBlastXML());
+				List<Hit> hits = target.getHits();
 				adapter = new HitsAdapter(this, hits);
 				content.setAdapter(adapter);
 			} catch (Exception e) {

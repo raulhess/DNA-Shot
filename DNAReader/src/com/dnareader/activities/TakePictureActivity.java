@@ -1,8 +1,6 @@
 package com.dnareader.activities;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -37,26 +35,13 @@ public class TakePictureActivity extends DrawerActivity {
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-			List<Result> list = new ArrayList<Result>();
 			try{
-				list = MainActivity.listResults;
 				Result r = new Result();
-				if (list.size() < 9) {
-					r.setId("000" + (list.size() + 1));
-				} else if (list.size() < 99) {
-					r.setId("00" + (list.size() + 1));
-				} else if (list.size() < 999) {
-					r.setId("0" + (list.size() + 1));
-				} else {
-					r.setId("1000");
-				}
 				r.setState(Result.UNPROCESSED);
 				r.setThumbnail(getThumbnail(data));
 				r.setImage(data);
 				r.setChecked(false);
-				list.add(0,r);
-				ResultManager.saveResult(getApplicationContext());
-				Log.d(MainActivity.TAG, "Picture captured! " + list.size() );
+				ResultManager.addResult(getApplicationContext(), r);
 				pictureTaken();
 				MainActivity.startThread();
 			}catch (Exception e){
@@ -109,6 +94,9 @@ public class TakePictureActivity extends DrawerActivity {
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
+			Camera.Parameters params = c.getParameters();
+			params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+			c.setParameters(params);
 		} catch (Exception e) {
 			Log.d(MainActivity.TAG, "Camera not opened : " + e.getMessage());
 		}

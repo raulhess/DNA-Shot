@@ -1,32 +1,37 @@
 package com.dnareader.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hit {
 
-	private int result_id;
-	private String hit_id;
+	private long resultId;
+	private long hit_id;
 	private String hit_def;
 	private String hit_len;
-	private ArrayList<Hsp> hsps;
+	private List<Hsp> hsps;
 
 	public Hit() {
 		hsps = new ArrayList<Hsp>();
 	}
 
-	public int getResult_id() {
-		return result_id;
+	public long getResultId() {
+		return resultId;
 	}
 
-	public void setResult_id(int result_id) {
-		this.result_id = result_id;
+	public void setResultId(long resultId) {
+		this.resultId = resultId;
 	}
 
 	public String getHit_id() {
+		return hit_id + "";
+	}
+	
+	public long getLongHit_id() {
 		return hit_id;
 	}
 
-	public void setHit_id(String hit_id) {
+	public void setHit_id(long hit_id) {
 		this.hit_id = hit_id;
 	}
 
@@ -46,12 +51,17 @@ public class Hit {
 		this.hit_len = hit_len;
 	}
 
-	public ArrayList<Hsp> getHsps() {
+	public List<Hsp> getHsps() {
 		return hsps;
 	}
 
-	public void setHsps(ArrayList<Hsp> hsps) {
+	public void setHsps(List<Hsp> hsps) {
 		this.hsps = hsps;
+	}
+	
+	@Override
+	public String toString() {
+		return "Hit[" + resultId + "]: id(" + hit_id + "), " + " hit_def(" + hit_def + "), hit_len(" + hit_len + ");";
 	}
 
 }
