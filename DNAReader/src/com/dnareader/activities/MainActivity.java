@@ -1,10 +1,7 @@
 package com.dnareader.activities;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -14,15 +11,11 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
@@ -189,7 +182,7 @@ public class MainActivity extends DrawerActivity {
 	private void saveHits() {
 		for (Result r : listResults){
 			if (r.getHits() != null)
-				ResultManager.addHits(this, r.getLongId(), r.getHits());
+				ResultManager.addHits(this, r);
 		}
 	}
 
@@ -305,13 +298,7 @@ public class MainActivity extends DrawerActivity {
 			case LoopThread.RELOAD_GUI:
 				updateGUI();
 				break;
-
-			case LoopThread.SAVE:
-				saveHits();
-				break;
 			}
-
-			updateGUI();
 		}
 
 	}

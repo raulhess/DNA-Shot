@@ -33,11 +33,11 @@ public class ResultManager {
 		saveImage(context, id, r.getImage());
 	}
 	
-	public static void addHits(Context context, long resId, List<Hit> hits){
+	public static void addHits(Context context, Result r){
 		ResultDatabase db = new ResultDatabase(context);
 		db.open();
-		for(Hit hit : hits){
-			long hitId = db.insertHit(hit,resId);
+		for(Hit hit : r.getHits()){
+			long hitId = db.insertHit(hit,r.getLongId());
 			Log.d(MainActivity.TAG, "Saved 'hit' with id = " + hitId);
 			for(Hsp hsp : hit.getHsps()){
 				long hspId = db.insertHsp(hsp,hitId);
@@ -62,15 +62,26 @@ public class ResultManager {
 			Log.d(MainActivity.TAG, "Couldn't set checked result with id = " + id);
 	}
 	
-	public static void updateResultState(Context context, long id, int state){
+	public static void updateResultState(Context context, Result r){
 		ResultDatabase db = new ResultDatabase(context);
 		db.open();
-		boolean updated = db.updateResultState(id, state);
+		boolean updated = db.updateResultState(r.getLongId(), r.getState());
 		db.close();
 		if(updated)
-			Log.d(MainActivity.TAG, "Updated result with id = " + id);
+			Log.d(MainActivity.TAG, "Updated result state with id = " + r.getLongId());
 		else
-			Log.d(MainActivity.TAG, "Couldn't update result with id = " + id);
+			Log.d(MainActivity.TAG, "Couldn't update result state with id = " + r.getLongId());
+	}
+	
+	public static void updateResult(Context context, Result r){
+		ResultDatabase db = new ResultDatabase(context);
+		db.open();
+		boolean updated = db.updateResult(r);
+		db.close();
+		if(updated)
+			Log.d(MainActivity.TAG, "Updated result with id = " + r.getLongId());
+		else
+			Log.d(MainActivity.TAG, "Couldn't update result with id = " + r.getLongId());
 	}
 
 	public static List<Result> loadResults(Context context){
@@ -88,8 +99,8 @@ public class ResultManager {
 				r.setBlastXML(resultsCursor.getString(resultsCursor.getColumnIndex(ResultDatabase.KEY_XML)));
 				r.setImage(loadImageBytes(context, r.getLongId()));
 				r.setThumbnail(getThumbnail(r.getImage()));
-				r.setHits(loadHits(context,r.getLongId()));
-				results.add(r);
+				r.setHits(null);
+				results.add(0,r);
 			}while(resultsCursor.moveToNext());
 		}
 		db.close();

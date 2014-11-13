@@ -13,6 +13,7 @@ import com.dnareader.data.Hit;
 import com.dnareader.data.Result;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.HitsAdapter;
+import com.dnareader.system.ResultManager;
 import com.dnareader.v0.R;
 
 public class ResultActivity extends DrawerActivity {
@@ -42,7 +43,7 @@ public class ResultActivity extends DrawerActivity {
 //				Bitmap bmp=BitmapFactory.decodeByteArray(target.getPreProcessedimage(),0,target.getPreProcessedimage().length);
 //				preDebug.setImageBitmap(bmp);
 				
-				List<Hit> hits = target.getHits();
+				List<Hit> hits = ResultManager.loadHits(getApplicationContext(), target.getLongId());
 				adapter = new HitsAdapter(this, hits);
 				content.setAdapter(adapter);
 			} catch (Exception e) {

@@ -10,11 +10,11 @@ import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Result;
 import com.dnareader.processing.Blast;
 import com.dnareader.processing.PreProcessing;
+import com.dnareader.system.ResultManager;
 import com.googlecode.leptonica.android.Pix;
 
 public class LoopThread implements Runnable {
-	
-	public static final int SAVE = 0;		
+		
 	public static final int RELOAD_GUI = 1;		
 
 	Context context;
@@ -59,7 +59,7 @@ public class LoopThread implements Runnable {
 						r.setPreProcessedimage(deskew);								
 						
 						r.setState(Result.PREPROCESSING_FINISHED);
-						handler.sendEmptyMessage(SAVE);
+						ResultManager.updateResultState(context, r);
 						handler.sendEmptyMessage(RELOAD_GUI);						
 						
 						break;
@@ -74,13 +74,14 @@ public class LoopThread implements Runnable {
 						if (text.length() > 20) {
 							r.setOcrText(text);
 							r.setState(Result.OCR_FINISHED);
+							ResultManager.updateResult(context, r);
 							Log.d(MainActivity.TAG, "OCR Processed");
 						} else {
 							r.setState(Result.ERROR);
 						}
 						
 						
-						handler.sendEmptyMessage(SAVE);
+						ResultManager.updateResultState(context, r);
 						handler.sendEmptyMessage(RELOAD_GUI);
 
 						break;
@@ -95,7 +96,7 @@ public class LoopThread implements Runnable {
 						Log.d(MainActivity.TAG, "Blast request sent");
 						
 											
-						handler.sendEmptyMessage(SAVE);
+						ResultManager.updateResultState(context, r);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
 						} else {
@@ -118,7 +119,8 @@ public class LoopThread implements Runnable {
 							r.setHits(Blast.parseBlastXML(xml));
 							r.setState(Result.DONE);
 							Log.d(MainActivity.TAG, "Blast XML received");
-							handler.sendEmptyMessage(SAVE);
+							ResultManager.updateResultState(context, r);
+							ResultManager.addHits(context, r);
 						} 												
 						
 						handler.sendEmptyMessage(RELOAD_GUI);

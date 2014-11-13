@@ -157,6 +157,13 @@ public class ResultDatabase {
 				KEY_GAPS }, KEY_HIT_FOREIGN_ID + "=" + id, null, null, null,
 				null);
 	}
+	
+	public boolean updateResult(Result r){
+		ContentValues fields = new ContentValues();
+		fields.put(KEY_OCR, r.getOcrText());
+		fields.put(KEY_XML, r.getBlastXML());
+		return db.update(TABLENAME_RESULT, fields, KEY_ID + "=" + r.getId(), null) > 0;
+	}
 
 	public boolean updateResultState(long id, int state) {
 		ContentValues fields = new ContentValues();
