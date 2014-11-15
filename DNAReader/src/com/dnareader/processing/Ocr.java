@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.googlecode.tesseract.android.TessBaseAPI.PageSegMode;
 
 
 public class Ocr {
@@ -28,9 +29,7 @@ public class Ocr {
 	// http://code.google.com/p/tesseract-ocr/downloads/list
 	public static final String lang = "eng";
 
-	private String TAG;
-	
-	protected boolean _taken;
+	private String TAG;	
 	private Context context;
 	
 	public Ocr(Context context) {
@@ -92,8 +91,7 @@ public class Ocr {
 	
 	public String doOcr(byte[] image){
 
-			final long startTime = System.currentTimeMillis();
-			_taken = true;
+			final long startTime = System.currentTimeMillis();			
 
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inSampleSize = 4;
@@ -109,6 +107,8 @@ public class Ocr {
 
 			TessBaseAPI baseApi = new TessBaseAPI();
 			baseApi.setDebug(true);
+			baseApi.setPageSegMode(TessBaseAPI.OEM_TESSERACT_CUBE_COMBINED);
+			baseApi.setPageSegMode(PageSegMode.PSM_AUTO);
 			baseApi.init(DATA_PATH, lang);
 			baseApi.setImage(bitmap);
 			

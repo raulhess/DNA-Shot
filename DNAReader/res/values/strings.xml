@@ -52,7 +52,9 @@
     <string name="result_error">Erro</string>
     <string name="result_id">Id: </string>
     <string name="result_result">Resultado da Busca: </string>
-    <string name="result_date">Horário: </string>
+    <string name="result_original">Imagem original: </string>
+    <string name="result_preProcessed">Imagem Pré-processada: </string>
+    <string name="result_ocr">Resultado OCR: </string>
     <string name="result_no_result">Você ainda não realizou nenhuma busca.</string>
     <string name="result_not_sent">Não Enviado</string>
     <string name="title_activity_result">Result</string>
@@ -61,6 +63,8 @@
     <string name="settings_notifications">Enviar notificações quando um resultado ficar pronto</string>
     <string name="warning_not_sent">O item selecionado ainda não foi enviado ao servidor</string>
     <string name="warning_waiting">O item selecionado ainda está sendo processado no nosso servidor</string>
+    <string name="title_tab_result">Result</string>
+    <string name="title_tab_debug">Debug</string>
     
     <string name="UNPROCESSED">Processamento não iniciado</string>
     <string name="PREPROCESSING_STARTED">Pré-processamento em andamento</string>

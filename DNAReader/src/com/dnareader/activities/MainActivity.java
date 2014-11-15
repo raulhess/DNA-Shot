@@ -179,13 +179,6 @@ public class MainActivity extends DrawerActivity {
 		}
 	}
 
-	private void saveHits() {
-		for (Result r : listResults){
-			if (r.getHits() != null)
-				ResultManager.addHits(this, r);
-		}
-	}
-
 	public static void startThread() {
 		if ((thread == null) || (thread.getState() == Thread.State.TERMINATED)) {
 			thread = new Thread(checkResultsLoop);
@@ -261,8 +254,7 @@ public class MainActivity extends DrawerActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									ResultManager
-											.clearResults(getApplicationContext());
+									ResultManager.clearResults(getApplicationContext());
 									load();
 									updateGUI();
 									if (thread != null)

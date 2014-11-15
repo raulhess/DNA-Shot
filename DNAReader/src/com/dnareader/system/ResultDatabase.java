@@ -188,5 +188,18 @@ public class ResultDatabase {
 	public boolean deleteHsps(long id) {
 		return db.delete(TABLENAME_HSP, KEY_HIT_FOREIGN_ID + "=" + id, null) > 0;
 	}
+	
+	public void deleteAll() {
+		db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_HSP);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_HIT);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_RESULT);
+		try {
+			db.execSQL(SQL_CREATE_TABLE_RESULT);
+			db.execSQL(SQL_CREATE_TABLE_HITS);
+			db.execSQL(SQL_CREATE_TABLE_HSPS);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

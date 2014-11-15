@@ -31,6 +31,7 @@ public class ResultManager {
 		long id = db.insertResult(r);
 		db.close();
 		saveImage(context, id, r.getImage());
+		saveImagePreProcessed(context, id, r.getPreProcessedimage());
 	}
 	
 	public static void addHits(Context context, Result r){
@@ -48,6 +49,10 @@ public class ResultManager {
 	}
 
 	public static void clearResults(Context context) {
+		ResultDatabase db = new ResultDatabase(context);
+		db.open();
+		db.deleteAll();
+		db.close();
 		
 	}
 	
@@ -98,8 +103,10 @@ public class ResultManager {
 				r.setOcrText(resultsCursor.getString(resultsCursor.getColumnIndex(ResultDatabase.KEY_OCR)));
 				r.setBlastXML(resultsCursor.getString(resultsCursor.getColumnIndex(ResultDatabase.KEY_XML)));
 				r.setImage(loadImageBytes(context, r.getLongId()));
+				r.setPreProcessedimage(loadImageBytesPreProcessed(context, r.getLongId()));
 				r.setThumbnail(getThumbnail(r.getImage()));
-				r.setHits(null);
+				r.setHits(loadHits(context, r.getLongId()));
+				
 				results.add(0,r);
 			}while(resultsCursor.moveToNext());
 		}
@@ -167,6 +174,18 @@ public class ResultManager {
 		}
 	}
 	
+	public static void saveImagePreProcessed(Context context, long id, byte[] img){
+		String filename = "result-" + id + "-imgPre";
+		try {
+			FileOutputStream outputStream = context.openFileOutput(filename,
+					Context.MODE_PRIVATE);
+			outputStream.write(img);
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static Bitmap loadImage(Context context, long id){
 		String filename = "result-" + id + "-img";
 		byte[] bytes = null;
@@ -189,6 +208,24 @@ public class ResultManager {
 	
 	public static byte[] loadImageBytes(Context context, long id){
 		String filename = "result-" + id + "-img";
+		byte[] bytes = null;
+		try {
+			InputStream is = context.openFileInput(filename);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			byte[] b = new byte[1024];
+			int bytesRead = 0;
+			while ((bytesRead = is.read(b)) != -1) {
+			   bos.write(b, 0, bytesRead);
+			}
+			bytes = bos.toByteArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bytes;
+	}
+	
+	public static byte[] loadImageBytesPreProcessed(Context context, long id){
+		String filename = "result-" + id + "-imgPre";
 		byte[] bytes = null;
 		try {
 			InputStream is = context.openFileInput(filename);
