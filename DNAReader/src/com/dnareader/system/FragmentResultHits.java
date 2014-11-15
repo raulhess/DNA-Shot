@@ -2,6 +2,7 @@ package com.dnareader.system;
 
 import java.util.List;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.widget.ExpandableListView;
 import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Hit;
 import com.dnareader.data.Result;
-import com.dnareader.processing.Blast;
 import com.dnareader.v0.R;
 
 public class FragmentResultHits extends Fragment {
@@ -37,7 +37,8 @@ public class FragmentResultHits extends Fragment {
      public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
          resultId = getArguments() != null ? getArguments().getInt("num") : 1;
-         Result target = MainActivity.listResults.get(resultId);         
+         Result target = MainActivity.listResults.get(resultId); 
+         target.setHits(ResultManager.loadHits(getActivity(), target.getLongId()));         
          hits = target.getHits();        
      }
  

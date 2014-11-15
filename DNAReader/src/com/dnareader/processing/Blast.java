@@ -11,6 +11,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.biojava3.core.sequence.io.util.IOUtils;
+import org.biojava3.ws.alignment.qblast.BlastOutputParameterEnum;
 import org.biojava3.ws.alignment.qblast.BlastProgramEnum;
 import org.biojava3.ws.alignment.qblast.NCBIQBlastAlignmentProperties;
 import org.biojava3.ws.alignment.qblast.NCBIQBlastOutputProperties;
@@ -18,6 +19,9 @@ import org.biojava3.ws.alignment.qblast.NCBIQBlastService;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import android.util.Log;
+
+import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Hit;
 
 public class Blast {
@@ -37,9 +41,9 @@ public class Blast {
 
 		// set output options
 		outputProps = new NCBIQBlastOutputProperties();
-
-		outputProps.setAlignmentNumber(5);
-		outputProps.setDescriptionNumber(5);
+		outputProps.setAlignmentNumber(10);
+		outputProps.setDescriptionNumber(10);
+		
 	}
 
 	public String startBlast(String sequence) throws Exception {
@@ -85,8 +89,12 @@ public class Blast {
 			SAXXMLHandler handler = new SAXXMLHandler();
 			xmlReader.setContentHandler(handler);
 			xmlReader.parse(new InputSource(new StringReader(xml)));
-
+			
 			hits = handler.getHits();
+			if(hits.size() > 10)
+				Log.d(MainActivity.TAG, "Cropping hits: " + hits.size());
+				return  new ArrayList<>(hits.subList(0, 10));
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

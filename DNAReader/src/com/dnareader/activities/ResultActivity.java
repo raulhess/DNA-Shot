@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.dnareader.data.Result;
 import com.dnareader.system.FragmentResultDebug;
 import com.dnareader.system.FragmentResultHits;
+import com.dnareader.system.ResultManager;
 import com.dnareader.v0.R;
 
 public class ResultActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -82,8 +83,7 @@ public class ResultActivity extends FragmentActivity implements ActionBar.TabLis
 				resultId = bundle.getInt("position");
 				Result target = MainActivity.listResults.get(resultId);
 				setTitle(getResources().getString(R.string.result_id)
-						+ target.getId());	
-				
+						+ target.getId());				
 			} catch (Exception e) {
 				Log.e("DNAReader", "Error: " + e.getMessage());
 				e.printStackTrace();

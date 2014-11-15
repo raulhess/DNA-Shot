@@ -30,8 +30,7 @@ public class ResultManager {
 		db.open();
 		long id = db.insertResult(r);
 		db.close();
-		saveImage(context, id, r.getImage());
-		saveImagePreProcessed(context, id, r.getPreProcessedimage());
+		saveImage(context, id, r.getImage());		
 	}
 	
 	public static void addHits(Context context, Result r){
@@ -105,7 +104,7 @@ public class ResultManager {
 				r.setImage(loadImageBytes(context, r.getLongId()));
 				r.setPreProcessedimage(loadImageBytesPreProcessed(context, r.getLongId()));
 				r.setThumbnail(getThumbnail(r.getImage()));
-				r.setHits(loadHits(context, r.getLongId()));
+				//r.setHits(loadHits(context, r.getLongId()));
 				
 				results.add(0,r);
 			}while(resultsCursor.moveToNext());

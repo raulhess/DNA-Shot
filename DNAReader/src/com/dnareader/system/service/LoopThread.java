@@ -60,6 +60,7 @@ public class LoopThread implements Runnable {
 						
 						r.setState(Result.PREPROCESSING_FINISHED);
 						ResultManager.updateResultState(context, r);
+						ResultManager.saveImagePreProcessed(context, r.getLongId(), r.getPreProcessedimage());
 						handler.sendEmptyMessage(RELOAD_GUI);						
 						
 						break;
