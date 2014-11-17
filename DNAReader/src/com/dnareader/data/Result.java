@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import android.graphics.Bitmap;
+
 public class Result implements Serializable{
 	public static final int UNPROCESSED = 0;
 	public static final int OCR_STARTED = 1;
@@ -17,9 +19,9 @@ public class Result implements Serializable{
 	
 	private static final long serialVersionUID = 982757938298536428L;
 	private long id;
-	private byte[] thumbnail;
-	private byte[] image;
-	private byte[] PreProcessedimage;
+	private Bitmap thumbnail;
+	private Bitmap image;
+	private Bitmap PreProcessedimage;
 	private boolean checked;
 	private Date date;
 	private String content;
@@ -61,19 +63,19 @@ public class Result implements Serializable{
 		this.id = id;
 	}
 	
-	public byte[] getThumbnail() {
+	public Bitmap getThumbnail() {
 		return thumbnail;
 	}
 
-	public void setThumbnail(byte[] image) {
+	public void setThumbnail(Bitmap image) {
 		this.thumbnail = image;
 	}
 	
-	public byte[] getImage() {
+	public Bitmap getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+	public void setImage(Bitmap image) {
 		this.image = image;
 	}
 	
@@ -113,11 +115,11 @@ public class Result implements Serializable{
 		this.rid = rid;
 	}
 
-	public byte[] getPreProcessedimage() {
+	public Bitmap getPreProcessedimage() {
 		return PreProcessedimage;
 	}
 
-	public void setPreProcessedimage(byte[] preProcessedimage) {
+	public void setPreProcessedimage(Bitmap preProcessedimage) {
 		PreProcessedimage = preProcessedimage;
 	}
 

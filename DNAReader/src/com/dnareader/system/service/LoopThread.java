@@ -1,6 +1,10 @@
 package com.dnareader.system.service;
 
+import java.io.ByteArrayOutputStream;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -54,13 +58,13 @@ public class LoopThread implements Runnable {
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
 						PreProcessing p = new PreProcessing();						
-						Pix threshold = p.adaptativeThreshold(r.getImage());						
+						Pix threshold = p.adaptativeThreshold(bitmapToByteArray(ResultManager.loadImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.IMG)));						
 						byte[] deskew = p.deskew(threshold);						
-						r.setPreProcessedimage(deskew);								
+						r.setPreProcessedimage(BitmapFactory.decodeByteArray(deskew, 0, deskew.length));								
 						
 						r.setState(Result.PREPROCESSING_FINISHED);
 						ResultManager.updateResultState(context, r);
-						ResultManager.saveImagePreProcessed(context, r.getLongId(), r.getPreProcessedimage());
+						ResultManager.saveImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.PREPROCESSED_IMG, r.getPreProcessedimage());
 						handler.sendEmptyMessage(RELOAD_GUI);						
 						
 						break;
@@ -71,7 +75,7 @@ public class LoopThread implements Runnable {
 						r.setState(Result.OCR_STARTED);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
-						String text = MainActivity.ocr.doOcr(r.getPreProcessedimage());
+						String text = MainActivity.ocr.doOcr(bitmapToByteArray(ResultManager.loadImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.PREPROCESSED_IMG)));
 						if (text.length() > 20) {
 							r.setOcrText(text);
 							r.setState(Result.OCR_FINISHED);
@@ -154,6 +158,12 @@ public class LoopThread implements Runnable {
 		
 		}while(!done && !MainActivity.listResults.isEmpty());
 		
+	}
+	
+	public static byte[] bitmapToByteArray(Bitmap bmp){
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 0, stream);
+		return stream.toByteArray();
 	}
 
 }

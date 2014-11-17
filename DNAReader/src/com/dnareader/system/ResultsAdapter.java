@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +32,7 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 		View cellView = inflater.inflate(R.layout.result_cell, null, true);
 		ImageView img = (ImageView) cellView.findViewById(R.id.img);
 		if (list.get(position).getThumbnail() != null)
-			img.setImageBitmap(BitmapFactory.decodeByteArray(list.get(position)
-					.getThumbnail(), 0,
-					list.get(position).getThumbnail().length));
+			img.setImageBitmap(list.get(position).getThumbnail());
 		TextView id = (TextView) cellView.findViewById(R.id.id);
 		id.setText(context.getResources().getString(R.string.result_title)
 				+ list.get(position).getId());

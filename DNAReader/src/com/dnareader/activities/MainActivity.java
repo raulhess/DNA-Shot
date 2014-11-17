@@ -157,7 +157,7 @@ public class MainActivity extends DrawerActivity {
 			handler = new ThreadHandler();
 
 		startThread();
-
+		load();
 	}
 
 	public void goTakePicture(View v) {
@@ -201,7 +201,7 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		load();
+		// load();
 		updateGUI();
 	}
 
@@ -254,7 +254,8 @@ public class MainActivity extends DrawerActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									ResultManager.clearResults(getApplicationContext());
+									ResultManager
+											.clearResults(getApplicationContext());
 									load();
 									updateGUI();
 									if (thread != null)

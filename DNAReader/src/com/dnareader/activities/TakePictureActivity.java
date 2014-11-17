@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -38,11 +39,14 @@ public class TakePictureActivity extends DrawerActivity {
 			try{
 				Result r = new Result();
 				r.setState(Result.UNPROCESSED);
+				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 				r.setThumbnail(getThumbnail(data));
-				r.setImage(data);
+				r.setImage(bmp);
 				r.setChecked(false);
-				ResultManager.addResult(getApplicationContext(), r);
+				long id = ResultManager.addResult(getApplicationContext(), r);
+				r.setId(id);
 				pictureTaken();
+				MainActivity.listResults.add(r);
 				MainActivity.startThread();
 			}catch (Exception e){
 				e.printStackTrace();
@@ -107,7 +111,14 @@ public class TakePictureActivity extends DrawerActivity {
 		mProgressDialogue = ProgressDialog.show(this, "Aguarde",
 				"Processando Foto", true);
 		buttonTakePicture.setEnabled(false);
-		camera.takePicture(null, null, picture);
+		camera.autoFocus(new AutoFocusCallback() {
+			
+			@Override
+			public void onAutoFocus(boolean success, Camera camera) {
+				camera.takePicture(null, null, picture);
+			}
+		});
+//		
 	}
 
 	public void pictureTaken() {
@@ -116,13 +127,13 @@ public class TakePictureActivity extends DrawerActivity {
 		cameraPreview.startPreview();
 	}
 	
-	public byte[] getThumbnail(byte[] originalData){
+	public Bitmap getThumbnail(byte[] originalData){
 		Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0, originalData.length);
 		Bitmap bmpReduced = Bitmap.createScaledBitmap(bmp, 100, 100, false);
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bmpReduced.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 		byte[] byteArray = stream.toByteArray();
-		return byteArray;
+		return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 	}
 	
 	@Override
