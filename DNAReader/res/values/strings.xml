@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DNA Reader</string>
+    <string name="app_name">DNA Shot</string>
     <string name="action_settings">Settings</string>
     <string name="action_clear">Clear Results</string>
 
@@ -17,69 +17,69 @@
     <color name="app_soft_red">#DBA9A9</color>
     <color name="app_soft_blue">#B4DEDB</color>
 
-    <string name="action_search">Pesquisar</string>
-    <string name="cancel">Cancelar</string>
-    <string name="clear_results_title">Limpar lista de resultados?</string>
-    <string name="confirm">Confirmar</string>
-    <string name="drawer_open">Abrir Drawer</string>
-    <string name="drawer_close">Fechar Drawer</string>
+    <string name="action_search">Search</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear_results_title">Clear all results?</string>
+    <string name="confirm">Confirm</string>
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
     <string name="menu_take_picture">CAMERA</string>
-    <string name="menu_upload_picture">CARREGAR</string>
-    <string name="menu_results">RESULTADOS</string>
-    <string name="menu_settings">CONFIGURAÇÕES</string>
-    <string name="menu_info">INFORMAÇÕES</string>
-    <string name="menu_content_title">Bem-vindo!</string>
-    <string name="menu_content">DNA Reader é um aplicativo desenvolvido por alunos da Universidade 
-        Federal do Paraná, com o objetivo de identificar sequencias de DNA através de fotos.</string>
-	<string name="menu_pictures_title">Enviar uma Foto</string>
-	<string name="menu_results_title">Últimos Envios</string>
-	<string name="menu_results_more">MAIS RESULTADOS</string>
+    <string name="menu_upload_picture">LOAD</string>
+    <string name="menu_results">RESULTS</string>
+    <string name="menu_settings">CONFIGURATION</string>
+    <string name="menu_info">INFORMATION</string>
+    <string name="menu_content_title">Welcome!</string>
+    <string name="menu_content">DNA Reader is an app developed by students of Federal University of Paraná, with the intent of recognize DNA sequences from photos.</string>
+	<string name="menu_pictures_title">Send a photo</string>
+	<string name="menu_results_title">Last results</string>
+	<string name="menu_results_more">MORE RESULTS</string>
     <string name="test">Test!</string>
-    <string name="clear_result">Limpar Resultados</string>
-    <string name="help_menu_img">Imagem do Menu</string>
-    <string name="help_result_img">Imagem do Resultado</string>
-    <string name="help_navigation_img">Imagem de Navegação</string>
-    <string name="capture">TIRAR</string>
-    <string name="title_activity_take_picture">Tirar Foto</string>
-    <string name="title_activity_upload_picture">Carregar Foto</string>
-    <string name="title_activity_results">Resultados</string>
-    <string name="title_activity_info">Informações</string>
-    <string name="title_activity_settings">Configurações</string>
-    <string name="result_title">Resultado - Id = </string>
-    <string name="result_loading">Carregando</string>
-    <string name="result_waiting">Aguardando resposta</string>
-    <string name="result_done">Pronto</string>
-    <string name="result_error">Erro</string>
+    <string name="clear_result">Clear Results</string>
+    <string name="help_menu_img">Menu Image</string>
+    <string name="help_result_img">Result Image</string>
+    <string name="help_navigation_img">Navegation Image</string>
+    <string name="capture">CAPTURE</string>
+    <string name="title_activity_take_picture">Capture Photo</string>
+    <string name="title_activity_upload_picture">Load Photo</string>
+    <string name="title_activity_results">Results</string>
+    <string name="title_activity_info">Informations</string>
+    <string name="title_activity_settings">Configurations</string>
+    <string name="result_title">Result </string>
+    <string name="result_loading">Loading</string>
+    <string name="result_waiting">Waiting response</string>
+    <string name="result_done">Done</string>
+    <string name="result_error">Error</string>
     <string name="result_id">Id: </string>
-    <string name="result_result">Resultado da Busca: </string>
-    <string name="result_original">Imagem original: </string>
-    <string name="result_preProcessed">Imagem Pré-processada: </string>
-    <string name="result_ocr">Resultado OCR: </string>
-    <string name="result_no_result">Você ainda não realizou nenhuma busca.</string>
-    <string name="result_not_sent">Não Enviado</string>
+    <string name="result_result">Search Result: </string>
+    <string name="result_original">Camera Image: </string>
+    <string name="result_preProcessed">Pre-processed Image: </string>
+    <string name="result_ocr">OCR: </string>
+    <string name="result_no_result">You did not make any search.</string>
+    <string name="result_not_sent">Not Sent</string>
     <string name="title_activity_result">Result</string>
-    <string name="notify_done_A">Seu resultado de ID: </string>
-    <string name="notify_done_B"> já está pronto</string>
-    <string name="settings_notifications">Enviar notificações quando um resultado ficar pronto</string>
-    <string name="warning_not_sent">O item selecionado ainda não foi enviado ao servidor</string>
-    <string name="warning_waiting">O item selecionado ainda está sendo processado no nosso servidor</string>
+    <string name="notify_done_A">Your Result of ID: </string>
+    <string name="notify_done_B">Already Done</string>
+    <string name="settings_notifications">Send notifications when a result is done</string>   
     <string name="title_tab_result">Result</string>
     <string name="title_tab_debug">Debug</string>
     
-    <string name="UNPROCESSED">Processamento não iniciado</string>
-    <string name="PREPROCESSING_STARTED">Pré-processamento em andamento</string>
-    <string name="PREPROCESSING_FINISHED">Pré-processamento terminou</string>    
-    <string name="OCR_STARTED">OCR em andamento</string>
-    <string name="OCR_FINISHED">OCR terminou</string>
-    <string name="BLAST_STARTED">Consulta ao BLAST iniciada</string>
-    <string name="BLAST_FINISHED">Consulta ao BLAST terminada</string>
-    <string name="DONE">Pronto</string>
-    <string name="ERROR">Ocorreu um erro de processamento</string>    
+    <string name="UNPROCESSED">Processing not initialized</string>
+    <string name="PREPROCESSING_STARTED">Pré-processing in progress</string>
+    <string name="PREPROCESSING_FINISHED">Pré-processing finished</string>    
+    <string name="OCR_STARTED">OCR in progress</string>
+    <string name="OCR_FINISHED">OCR finished</string>
+    <string name="BLAST_STARTED">BLAST search in progress</string>
+    <string name="BLAST_FINISHED">BLAST search finished</string>
+    <string name="DONE">Done</string>
+    <string name="ERROR">A processing error occurred</string>    
+    
+    <string name="warning_not_sent">The selected item not initialized yet</string>
+    <string name="warning_waiting">The selected item is being processed</string>
 
 
     <string-array name="array_language">
         <item> English</item>
-        <item> Português Br</item>
+        <item> Português (Brasil)</item>
     </string-array>
 
 </resources>
