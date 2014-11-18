@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import com.dnareader.data.Result;
 import com.dnareader.system.FragmentResultDebug;
 import com.dnareader.system.FragmentResultHits;
-import com.dnareader.system.ResultManager;
 import com.dnareader.v0.R;
 
 public class ResultActivity extends FragmentActivity implements ActionBar.TabListener {

@@ -22,7 +22,6 @@ public class Result implements Serializable{
 	private Bitmap thumbnail;
 	private Bitmap image;
 	private Bitmap PreProcessedimage;
-	private boolean checked;
 	private Date date;
 	private String content;
 	private String ocrText;
@@ -77,14 +76,6 @@ public class Result implements Serializable{
 
 	public void setImage(Bitmap image) {
 		this.image = image;
-	}
-	
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
 	}
 
 	public String getContent() {

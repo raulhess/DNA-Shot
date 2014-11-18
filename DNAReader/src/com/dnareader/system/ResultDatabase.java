@@ -22,7 +22,6 @@ public class ResultDatabase {
 	static String KEY_STATE = "state";
 	static String KEY_OCR = "ocr";
 	static String KEY_XML = "xml";
-	static String KEY_CHECKED = "checked";
 
 	static String KEY_RESULT_FOREIGN_ID = "result";
 	static String KEY_HIT_ID = "hitid";
@@ -47,8 +46,7 @@ public class ResultDatabase {
 
 	String SQL_CREATE_TABLE_RESULT = "create table " + TABLENAME_RESULT + " ("
 			+ KEY_ID + " INTEGER PRIMARY KEY autoincrement, " + KEY_STATE
-			+ " INTEGER not null, " + KEY_OCR + " TEXT, " + KEY_XML + " TEXT, "
-			+ KEY_CHECKED + " INTEGER not null);";
+			+ " INTEGER not null, " + KEY_OCR + " TEXT, " + KEY_XML + " TEXT );";
 	String SQL_CREATE_TABLE_HITS = "create table " + TABLENAME_HIT + " ("
 			+ KEY_HIT_ID + " INTEGER PRIMARY KEY autoincrement, " + KEY_HITNAME
 			+ " TEXT not null, " + KEY_LEN + " INTEGER not null, "
@@ -110,7 +108,6 @@ public class ResultDatabase {
 		fields.put(KEY_STATE, result.getState());
 		fields.put(KEY_OCR, result.getOcrText());
 		fields.put(KEY_XML, result.getBlastXML());
-		fields.put(KEY_CHECKED, result.isChecked());
 		return db.insert(TABLENAME_RESULT, null, fields);
 	}
 
@@ -140,7 +137,7 @@ public class ResultDatabase {
 
 	public Cursor loadResults() {
 		return db.query(TABLENAME_RESULT, new String[] { KEY_ID, KEY_STATE,
-				KEY_OCR, KEY_XML, KEY_CHECKED }, null, null, null,
+				KEY_OCR, KEY_XML}, null, null, null,
 				null, null);
 	}
 
@@ -168,12 +165,6 @@ public class ResultDatabase {
 	public boolean updateResultState(long id, int state) {
 		ContentValues fields = new ContentValues();
 		fields.put(KEY_STATE, state);
-		return db.update(TABLENAME_RESULT, fields, KEY_ID + "=" + id, null) > 0;
-	}
-
-	public boolean updateResultChecked(long id) {
-		ContentValues fields = new ContentValues();
-		fields.put(KEY_CHECKED, true);
 		return db.update(TABLENAME_RESULT, fields, KEY_ID + "=" + id, null) > 0;
 	}
 

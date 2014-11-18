@@ -1,7 +1,6 @@
 package com.dnareader.activities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -128,9 +127,6 @@ public class MainActivity extends DrawerActivity {
 							Toast.LENGTH_SHORT).show();
 					break;
 				case Result.DONE:
-					target.setChecked(true);
-					ResultManager.setChecked(getApplicationContext(),
-							target.getLongId());
 					Intent it = new Intent(getApplicationContext(),
 							ResultActivity.class);
 					Bundle bundle = new Bundle();
@@ -281,6 +277,7 @@ public class MainActivity extends DrawerActivity {
 		return true;
 	}
 
+	@SuppressLint("HandlerLeak")
 	private class ThreadHandler extends Handler {
 
 		// Create handleMessage function

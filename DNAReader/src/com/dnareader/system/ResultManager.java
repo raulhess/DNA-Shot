@@ -63,18 +63,6 @@ public class ResultManager {
 
 	}
 
-	public static void setChecked(Context context, long id) {
-		ResultDatabase db = new ResultDatabase(context);
-		db.open();
-		boolean checked = db.updateResultChecked(id);
-		db.close();
-		if (checked)
-			Log.d(MainActivity.TAG, "Set checked result with id = " + id);
-		else
-			Log.d(MainActivity.TAG, "Couldn't set checked result with id = "
-					+ id);
-	}
-
 	public static void updateResultState(Context context, Result r) {
 		ResultDatabase db = new ResultDatabase(context);
 		db.open();

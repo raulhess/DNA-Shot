@@ -42,7 +42,6 @@ public class TakePictureActivity extends DrawerActivity {
 				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 				r.setThumbnail(getThumbnail(data));
 				r.setImage(bmp);
-				r.setChecked(false);
 				long id = ResultManager.addResult(getApplicationContext(), r);
 				r.setId(id);
 				pictureTaken();
