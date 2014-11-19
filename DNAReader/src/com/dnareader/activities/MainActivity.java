@@ -50,6 +50,7 @@ public class MainActivity extends DrawerActivity {
 	private TextView uploadPicture;
 
 	public static List<Result> listResults;
+	public static List<Result> receivedListResults;
 	private ListView results;
 	private ResultsAdapter adapter;
 
@@ -154,7 +155,8 @@ public class MainActivity extends DrawerActivity {
 			handler = new ThreadHandler();
 
 		startThread();
-		load();
+		listResults = receivedListResults;
+//		load();
 	}
 
 	public void goTakePicture(View v) {

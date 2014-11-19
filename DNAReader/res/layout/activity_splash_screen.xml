@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <ImageView 
+        android:id="@+id/splash_main_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_bright_blue"
+        android:adjustViewBounds="true"
+        android:src="@drawable/splash_screen"/>
+    
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#888"/>
+    
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_white"
+        android:src="@drawable/logo_ufpr"
+        android:padding="2dp"/>
+    
+
+</LinearLayout>

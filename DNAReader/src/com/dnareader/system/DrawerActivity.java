@@ -1,22 +1,22 @@
 package com.dnareader.system;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+
 import com.dnareader.activities.InfoActivity;
 import com.dnareader.activities.SettingsActivity;
 import com.dnareader.activities.TakePictureActivity;
 import com.dnareader.activities.UploadPictureActivity;
 import com.dnareader.v0.R;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-
 @SuppressLint("InflateParams")
-public class DrawerActivity extends ActionBarActivity implements
+public class DrawerActivity extends Activity implements
 		ListView.OnItemClickListener {
 	public DrawerLayout drawerLayout;
 	public FrameLayout activityContent;
