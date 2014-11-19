@@ -10,11 +10,14 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,17 +36,18 @@ import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
 import com.dnareader.system.ResultsAdapter;
 import com.dnareader.system.service.LoopThread;
+import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
 
 @SuppressLint("InflateParams")
 public class MainActivity extends DrawerActivity {
 	public static final String TAG = "DNAReader";
 	public static final String SETTINGS_FILE = "dna-reader-preferences";
-	public static final int REQUEST_IMAGE_CAPTURE = 0;
-	public static final int NOTIFICATION_ID = 1;
-	Uri fileUri = null;
+	public static final int NOTIFICATION_ID = 1;		
+	private static final int SELECT_PICTURE = 1;
+	private String selectedImagePath;	
+	
 	public static Typeface caviarDreams;
-
 	private ActionBarDrawerToggle drawerToggle;
 
 	private TextView takePicture;
@@ -89,7 +93,7 @@ public class MainActivity extends DrawerActivity {
 
 		};
 		drawerLayout.setDrawerListener(drawerToggle);
-
+		
 		// instantiates the main menu views
 		// lastResultsList = (ListView) findViewById(R.id.menu_last_results);
 		takePicture = (TextView) findViewById(R.id.menu_take_picture);
@@ -163,9 +167,91 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void goUploadPicture(View v) {
-		Intent it = new Intent(this, UploadPictureActivity.class);
-		startActivity(it);
+		// in onCreate or any event where your want the user to
+		// select a file
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+				SELECT_PICTURE);
 	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			if (requestCode == SELECT_PICTURE) {
+				Uri selectedImageUri = data.getData();
+				Log.d("URI VAL",
+						"selectedImageUri = " + selectedImageUri.toString());
+				selectedImagePath = getPath(selectedImageUri);
+
+				if (selectedImagePath != null) {
+					// IF LOCAL IMAGE, NO MATTER IF ITS DIRECTLY FROM GALLERY
+					// (EXCEPT PICASSA ALBUM),
+					// OR OI/ASTRO FILE MANAGER. EVEN DROPBOX IS SUPPORTED BY
+					// THIS BECAUSE DROPBOX DOWNLOAD THE IMAGE
+					// IN THIS FORM -
+					// file:///storage/emulated/0/Android/data/com.dropbox.android/...
+					System.out.println("local image:" + selectedImagePath);
+					
+					ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());					
+					Bitmap bitmap = ResultManager.loadImage(selectedImagePath, 1);
+					manager.startProcessing(bitmap);
+					
+				} else {
+					System.out.println("picasa/dropbox image!");
+					loadPicasaImageFromGallery(selectedImageUri);
+				}
+			}
+		}
+	}
+
+	// NEW METHOD FOR PICASA IMAGE LOAD
+	private void loadPicasaImageFromGallery(final Uri uri) {
+		String[] projection = { MediaColumns.DATA, MediaColumns.DISPLAY_NAME };
+		Cursor cursor = getContentResolver().query(uri, projection, null, null,
+				null);
+		if (cursor != null) {
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(MediaColumns.DISPLAY_NAME);
+			if (columnIndex != -1) {
+				new Thread(new Runnable() {
+					// NEW THREAD BECAUSE NETWORK REQUEST WILL BE MADE THAT WILL
+					// BE A LONG PROCESS & BLOCK UI
+					// IF CALLED IN UI THREAD
+					public void run() {
+						try {
+							Bitmap bitmap = android.provider.MediaStore.Images.Media
+									.getBitmap(getContentResolver(), uri);
+							// THIS IS THE BITMAP IMAGE WE ARE LOOKING FOR.
+							ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());
+							manager.startProcessing(ResultManager.adjustImage(bitmap,1));
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+				}).start();
+			}
+		}
+		cursor.close();
+	}
+
+	public String getPath(Uri uri) {
+		String[] projection = { MediaColumns.DATA };
+		Cursor cursor = getContentResolver().query(uri, projection, null, null,
+				null);
+		if (cursor != null) {
+			// HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+			// THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+			cursor.moveToFirst();
+			int columnIndex = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
+			String filePath = cursor.getString(columnIndex);
+			cursor.close();
+			return filePath;
+		} else
+			return uri.getPath(); // FOR OI/ASTRO/Dropbox etc
+	}
+
 
 	private void load() {
 		try {

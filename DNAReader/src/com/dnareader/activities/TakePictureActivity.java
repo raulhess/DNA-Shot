@@ -22,6 +22,7 @@ import com.dnareader.data.Result;
 import com.dnareader.system.CameraPreview;
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.system.ResultManager;
+import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
 
 public class TakePictureActivity extends DrawerActivity {
@@ -35,28 +36,9 @@ public class TakePictureActivity extends DrawerActivity {
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			try {
-				Result r = new Result();
-				r.setState(Result.UNPROCESSED);
-				while(r.getImage() == null){
-					try{
-						r.setImage(BitmapFactory
-								.decodeByteArray(data, 0, data.length));
-					}catch(OutOfMemoryError e){
-						r.setImage(null);
-					}
-				}
-				while(r.getThumbnail() == null){
-					try{
-						r.setThumbnail(getThumbnail(data));
-					}catch(OutOfMemoryError e){
-						r.setThumbnail(null);
-					}
-				}
-				long id = ResultManager.addResult(getApplicationContext(), r);
-				r.setId(id);
-				pictureTaken();
-				MainActivity.listResults.add(0, r);
-				MainActivity.startThread();
+				ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());
+				manager.startProcessing(data);
+				pictureTaken();				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -134,12 +116,6 @@ public class TakePictureActivity extends DrawerActivity {
 		mProgressDialogue.dismiss();
 		buttonTakePicture.setEnabled(true);
 		cameraPreview.startPreview();
-	}
-
-	public Bitmap getThumbnail(byte[] originalData) {
-		Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0,
-				originalData.length);
-		return Bitmap.createScaledBitmap(bmp, 100, 100, false);
 	}
 
 	@Override
