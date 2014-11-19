@@ -29,7 +29,8 @@
     <string name="menu_settings">CONFIGURATION</string>
     <string name="menu_info">INFORMATION</string>
     <string name="menu_content_title">Welcome!</string>
-    <string name="menu_content">DNA Reader is an app developed by students of Federal University of Paraná, with the intent of recognize DNA sequences from photos.</string>
+    <string name="about_title">About:</string>    
+    <string name="about">DNA Reader is an app developed by students of Federal University of Paraná, with the intent of recognize DNA sequences from photos.</string>
 	<string name="menu_pictures_title">Send a photo</string>
 	<string name="menu_results_title">Last results</string>
 	<string name="menu_results_more">MORE RESULTS</string>
@@ -42,9 +43,9 @@
     <string name="title_activity_take_picture">Capture Photo</string>
     <string name="title_activity_upload_picture">Load Photo</string>
     <string name="title_activity_results">Results</string>
-    <string name="title_activity_info">Informations</string>
+    <string name="title_activity_info">About</string>
     <string name="title_activity_settings">Configurations</string>
-    <string name="result_title">Result </string>
+    <string name="result_title">Result:</string>
     <string name="result_loading">Loading</string>
     <string name="result_waiting">Waiting response</string>
     <string name="result_done">Done</string>
@@ -64,8 +65,8 @@
     <string name="title_tab_debug">Debug</string>
     
     <string name="UNPROCESSED">Processing not initialized</string>
-    <string name="PREPROCESSING_STARTED">Pré-processing in progress</string>
-    <string name="PREPROCESSING_FINISHED">Pré-processing finished</string>    
+    <string name="PREPROCESSING_STARTED">Pre-processing in progress</string>
+    <string name="PREPROCESSING_FINISHED">Pre-processing finished</string>    
     <string name="OCR_STARTED">OCR in progress</string>
     <string name="OCR_FINISHED">OCR finished</string>
     <string name="BLAST_STARTED">BLAST search in progress</string>
@@ -78,8 +79,7 @@
 
 
     <string-array name="array_language">
-        <item> English</item>
-        <item> Português (Brasil)</item>
+        <item> English</item>        
     </string-array>
 
 </resources>
