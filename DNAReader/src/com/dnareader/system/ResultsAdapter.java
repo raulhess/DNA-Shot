@@ -35,7 +35,7 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 			img.setImageBitmap(list.get(position).getThumbnail());
 		TextView id = (TextView) cellView.findViewById(R.id.id);
 		id.setText(context.getResources().getString(R.string.result_title)
-				+ ": " + list.get(position).getId());
+				 + list.get(position).getId());
 		TextView status = (TextView) cellView.findViewById(R.id.status);
 		status.setText("Status: "
 				+ context.getResources().getString(R.string.result_error));

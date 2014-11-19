@@ -2,9 +2,8 @@ package com.dnareader.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -13,15 +12,16 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.dnareader.data.Result;
 import com.dnareader.system.CameraPreview;
 import com.dnareader.system.DrawerActivity;
-import com.dnareader.system.ResultManager;
+import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
 
 public class TakePictureActivity extends DrawerActivity {
@@ -35,28 +35,9 @@ public class TakePictureActivity extends DrawerActivity {
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			try {
-				Result r = new Result();
-				r.setState(Result.UNPROCESSED);
-				while(r.getImage() == null){
-					try{
-						r.setImage(BitmapFactory
-								.decodeByteArray(data, 0, data.length));
-					}catch(OutOfMemoryError e){
-						r.setImage(null);
-					}
-				}
-				while(r.getThumbnail() == null){
-					try{
-						r.setThumbnail(getThumbnail(data));
-					}catch(OutOfMemoryError e){
-						r.setThumbnail(null);
-					}
-				}
-				long id = ResultManager.addResult(getApplicationContext(), r);
-				r.setId(id);
-				pictureTaken();
-				MainActivity.listResults.add(0, r);
-				MainActivity.startThread();
+				ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());
+				manager.startProcessing(data);
+				pictureTaken();				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -67,7 +48,11 @@ public class TakePictureActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);		
 		setContentView(R.layout.activity_take_picture);
 		mainFrameLayout = (FrameLayout) findViewById(R.id.main_frame_layout);
 		if (!checkCameraHardware(this)) {
@@ -134,12 +119,6 @@ public class TakePictureActivity extends DrawerActivity {
 		mProgressDialogue.dismiss();
 		buttonTakePicture.setEnabled(true);
 		cameraPreview.startPreview();
-	}
-
-	public Bitmap getThumbnail(byte[] originalData) {
-		Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0,
-				originalData.length);
-		return Bitmap.createScaledBitmap(bmp, 100, 100, false);
 	}
 
 	@Override

@@ -193,19 +193,25 @@ public class ResultManager {
 					MainActivity.SETTINGS_FILE, 0);
 			int compression = settings.getInt("compression", 2) * 25;
 			img.compress(Bitmap.CompressFormat.JPEG, compression, fOut);
+			
 			fOut.flush();
 			fOut.close();
 
-			Log.d(MainActivity.TAG, "Saved image:" + fullPath + filename + " with [" + compression + "] compression");
+			Log.d(MainActivity.TAG, "Saved image:" + fullPath + " " + filename);
 		} catch (Exception e) {
-			Log.d(MainActivity.TAG, "Couldn't save image:" + fullPath + filename);
+			Log.d(MainActivity.TAG, "Couldn't save image:" + fullPath + " "
+					+ filename);
 			e.printStackTrace();
 		}
 	}
 
-	private static Bitmap loadImage(Context context, String filename, int adjust) {
+	public static Bitmap loadImage(Context context, String filename, int adjust) {
 		String fullPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + DIRECTORY + filename;
+		return loadImage(fullPath, adjust);
+	}
+	
+	public static Bitmap loadImage(String fullPath, int adjust) {		
 		Log.d(MainActivity.TAG, "Loading image:" + fullPath);
 		Bitmap bmp = null;
 		try {
@@ -213,7 +219,7 @@ public class ResultManager {
 				final BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inSampleSize = adjust;
 				bmp = BitmapFactory.decodeFile(fullPath, options);
-				if (adjust == 0)
+				if(adjust == 0)
 					bmp = Bitmap.createScaledBitmap(bmp, 100, 100, false);
 			}
 			if (bmp != null) {
@@ -228,7 +234,14 @@ public class ResultManager {
 			return null;
 		}
 	}
-
+	
+	public static Bitmap adjustImage(Bitmap bitmap, int adjust) {		
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inSampleSize = adjust;
+		return Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / adjust,
+				bitmap.getHeight() / adjust, false);
+	}
+	
 	public static Bitmap loadFullImage(Context context, long id, int adjust) {
 		String filename = FILEPREFIX + id + IMG;
 		return loadImage(context, filename, adjust);
@@ -252,6 +265,10 @@ public class ResultManager {
 	public static Bitmap loadPreImage(Context context, long id, int adjust) {
 		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
 		return loadImage(context, filename, adjust);
+	}
+	
+	public static Bitmap getThumbnail(Bitmap bitmap) {		
+		return Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 	}
 
 	public static boolean isExternalStorageReadable() {
