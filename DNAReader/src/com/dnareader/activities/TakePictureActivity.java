@@ -2,9 +2,8 @@ package com.dnareader.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -13,15 +12,15 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.dnareader.data.Result;
 import com.dnareader.system.CameraPreview;
 import com.dnareader.system.DrawerActivity;
-import com.dnareader.system.ResultManager;
 import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
 
@@ -49,7 +48,11 @@ public class TakePictureActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);		
 		setContentView(R.layout.activity_take_picture);
 		mainFrameLayout = (FrameLayout) findViewById(R.id.main_frame_layout);
 		if (!checkCameraHardware(this)) {
