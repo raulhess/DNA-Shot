@@ -1,6 +1,5 @@
 package com.dnareader.system;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -12,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
@@ -37,7 +35,6 @@ public class ResultManager {
 		long id = db.insertResult(r);
 		db.close();
 		saveImage(context, FILEPREFIX + id + IMG, r.getImage());
-		saveImage(context, FILEPREFIX + id + THUMBNAIL, Bitmap.createScaledBitmap(r.getImage(), 100, 100, false));
 		return id;
 	}
 
@@ -105,7 +102,7 @@ public class ResultManager {
 						.getColumnIndex(ResultDatabase.KEY_OCR)));
 				r.setBlastXML(resultsCursor.getString(resultsCursor
 						.getColumnIndex(ResultDatabase.KEY_XML)));
-				r.setThumbnail(loadImage(context, FILEPREFIX + r.getLongId() + THUMBNAIL ));
+				r.setThumbnail(loadThumbnail(context, r.getLongId()));
 
 				results.add(0, r);
 			} while (resultsCursor.moveToNext());
@@ -175,10 +172,10 @@ public class ResultManager {
 		return hsps;
 	}
 
-	public static void saveImage(Context context, String filename, Bitmap img) {
+	private static void saveImage(Context context, String filename, Bitmap img) {
 		String fullPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + DIRECTORY;
-		Log.d(MainActivity.TAG, fullPath);
+		Log.d(MainActivity.TAG, "Saving image:" + fullPath + " " + filename);
 
 		try {
 			File dir = new File(fullPath);
@@ -191,56 +188,75 @@ public class ResultManager {
 			file.createNewFile();
 			fOut = new FileOutputStream(file);
 
-			// 100 means no compression, the lower you go, the stronger the
-			// compression
-			img.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+			img.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
 			fOut.flush();
 			fOut.close();
 
-			MediaStore.Images.Media.insertImage(context.getContentResolver(),
-					file.getAbsolutePath(), file.getName(), file.getName());
-
+			Log.d(MainActivity.TAG, "Saved image:" + fullPath + " " + filename);
 		} catch (Exception e) {
+			Log.d(MainActivity.TAG, "Couldn't save image:" + fullPath + " "
+					+ filename);
 			e.printStackTrace();
 		}
 	}
 
-	public static Bitmap loadImage(Context context, String filename) {
+	private static Bitmap loadImage(Context context, String filename, int adjust) {
 		String fullPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + DIRECTORY + filename;
+		Log.d(MainActivity.TAG, "Loading image:" + fullPath);
 		Bitmap bmp = null;
 		try {
 			if (isExternalStorageReadable()) {
-				bmp = BitmapFactory.decodeFile(fullPath);
+				final BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inSampleSize = adjust;
+				bmp = BitmapFactory.decodeFile(fullPath, options);
+				if(adjust == 0)
+					bmp = Bitmap.createScaledBitmap(bmp, 100, 100, false);
+			}
+			if (bmp != null) {
+				Log.d(MainActivity.TAG, "Succesfuly loaded image:" + fullPath);
+			} else {
+				Log.d(MainActivity.TAG, "Couldn't load image:" + fullPath);
 			}
 			return bmp;
 		} catch (Exception e) {
 			Log.e("getThumbnail() on external storage", e.getMessage());
+			Log.d(MainActivity.TAG, "Couldn't load image:" + fullPath);
 			return null;
 		}
 	}
 
-	public static Bitmap getThumbnail(Bitmap bmp) {
-		Bitmap bmpReduced = Bitmap.createScaledBitmap(bmp, 100, 100, false);
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bmpReduced.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		return bmpReduced;
+	public static Bitmap loadFullImage(Context context, long id, int adjust) {
+		String filename = FILEPREFIX + id + IMG;
+		return loadImage(context, filename, adjust);
 	}
-	
-	public static boolean isExternalStorageWritable() {
-	    String state = Environment.getExternalStorageState();
-	    if (Environment.MEDIA_MOUNTED.equals(state)) {
-	        return true;
-	    }
-	    return false;
+
+	public static void saveFullImage(Context context, long id, Bitmap bmp) {
+		String filename = FILEPREFIX + id + IMG;
+		saveImage(context, filename, bmp);
+	}
+
+	public static void savePreImage(Context context, long id, Bitmap bmp) {
+		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
+		saveImage(context, filename, bmp);
+	}
+
+	public static Bitmap loadThumbnail(Context context, long id) {
+		String filename = FILEPREFIX + id + IMG;
+		return loadImage(context, filename, 0);
+	}
+
+	public static Bitmap loadPreImage(Context context, long id, int adjust) {
+		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
+		return loadImage(context, filename, adjust);
 	}
 
 	public static boolean isExternalStorageReadable() {
-	    String state = Environment.getExternalStorageState();
-	    if (Environment.MEDIA_MOUNTED.equals(state) ||
-	        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-	        return true;
-	    }
-	    return false;
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)
+				|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			return true;
+		}
+		return false;
 	}
 }

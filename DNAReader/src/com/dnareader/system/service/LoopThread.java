@@ -58,13 +58,13 @@ public class LoopThread implements Runnable {
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
 						PreProcessing p = new PreProcessing();						
-						Pix threshold = p.adaptativeThreshold(bitmapToByteArray(ResultManager.loadImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.IMG)));						
+						Pix threshold = p.adaptativeThreshold(bitmapToByteArray(ResultManager.loadFullImage(context, r.getLongId(), 1)));						
 						byte[] deskew = p.deskew(threshold);						
 						r.setPreProcessedimage(BitmapFactory.decodeByteArray(deskew, 0, deskew.length));								
 						
 						r.setState(Result.PREPROCESSING_FINISHED);
 						ResultManager.updateResultState(context, r);
-						ResultManager.saveImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.PREPROCESSED_IMG, r.getPreProcessedimage());
+						ResultManager.savePreImage(context, r.getLongId(), r.getPreProcessedimage());
 						handler.sendEmptyMessage(RELOAD_GUI);						
 						
 						break;
@@ -75,7 +75,7 @@ public class LoopThread implements Runnable {
 						r.setState(Result.OCR_STARTED);
 						handler.sendEmptyMessage(RELOAD_GUI);
 						
-						String text = MainActivity.ocr.doOcr(bitmapToByteArray(ResultManager.loadImage(context, ResultManager.FILEPREFIX + r.getLongId() + ResultManager.PREPROCESSED_IMG)));
+						String text = MainActivity.ocr.doOcr(bitmapToByteArray(ResultManager.loadPreImage(context, r.getLongId(), 1)));
 						if (text.length() > 20) {
 							r.setOcrText(text);
 							r.setState(Result.OCR_FINISHED);

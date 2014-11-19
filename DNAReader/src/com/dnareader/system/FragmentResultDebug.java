@@ -1,7 +1,6 @@
 package com.dnareader.system;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -41,19 +40,11 @@ public class FragmentResultDebug extends Fragment {
 		resultId = getArguments() != null ? getArguments().getInt("num") : 1;
 		Result target = MainActivity.listResults.get(resultId);
 
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inSampleSize = 4;
-		
-		
-		
-		if (target.getImage() != null){
-			Bitmap bmp = ResultManager.loadImage(getActivity(), ResultManager.FILEPREFIX + target.getLongId() + ResultManager.IMG);
-			original = Bitmap.createScaledBitmap(bmp, bmp.getWidth()/4, bmp.getHeight()/4, false);
-		}
-		if (target.getPreProcessedimage() != null){
-			Bitmap bmp = ResultManager.loadImage(getActivity(), ResultManager.FILEPREFIX + target.getLongId() + ResultManager.PREPROCESSED_IMG);
-			preProcessed = Bitmap.createScaledBitmap(bmp, bmp.getWidth()/4, bmp.getHeight()/4, false);
-		}
+		original = ResultManager.loadFullImage(getActivity(),
+				target.getLongId(), 4);
+		preProcessed = ResultManager.loadPreImage(getActivity(),
+				target.getLongId(), 4);
+
 		ocr = target.getOcrText();
 	}
 

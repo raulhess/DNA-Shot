@@ -103,7 +103,7 @@ public class MainActivity extends DrawerActivity {
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
 		if (listResults == null)
-			load();
+			listResults = new ArrayList<Result>();
 		Log.d(TAG, "List state " + listResults.size());
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);

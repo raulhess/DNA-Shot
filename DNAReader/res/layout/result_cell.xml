@@ -37,16 +37,18 @@
 
     <ImageView
         android:id="@+id/dna_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="3dp"
         android:alpha="0.5" />
 
     <ImageView
         android:id="@+id/ocr_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_margin="3dp"
         android:layout_toLeftOf="@id/dna_icon"
         android:layout_toStartOf="@id/dna_icon"
         android:alpha="0.5" />

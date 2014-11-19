@@ -1,7 +1,5 @@
 package com.dnareader.activities;
 
-import java.io.ByteArrayOutputStream;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -36,18 +34,19 @@ public class TakePictureActivity extends DrawerActivity {
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-			try{
+			try {
 				Result r = new Result();
 				r.setState(Result.UNPROCESSED);
-				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+				Bitmap bmp = BitmapFactory
+						.decodeByteArray(data, 0, data.length);
 				r.setThumbnail(getThumbnail(data));
 				r.setImage(bmp);
 				long id = ResultManager.addResult(getApplicationContext(), r);
 				r.setId(id);
 				pictureTaken();
-				MainActivity.listResults.add(r);
+				MainActivity.listResults.add(0, r);
 				MainActivity.startThread();
-			}catch (Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -111,13 +110,13 @@ public class TakePictureActivity extends DrawerActivity {
 				"Processando Foto", true);
 		buttonTakePicture.setEnabled(false);
 		camera.autoFocus(new AutoFocusCallback() {
-			
+
 			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				camera.takePicture(null, null, picture);
 			}
 		});
-//		
+		//
 	}
 
 	public void pictureTaken() {
@@ -125,16 +124,13 @@ public class TakePictureActivity extends DrawerActivity {
 		buttonTakePicture.setEnabled(true);
 		cameraPreview.startPreview();
 	}
-	
-	public Bitmap getThumbnail(byte[] originalData){
-		Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0, originalData.length);
-		Bitmap bmpReduced = Bitmap.createScaledBitmap(bmp, 100, 100, false);
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bmpReduced.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		byte[] byteArray = stream.toByteArray();
-		return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+	public Bitmap getThumbnail(byte[] originalData) {
+		Bitmap bmp = BitmapFactory.decodeByteArray(originalData, 0,
+				originalData.length);
+		return Bitmap.createScaledBitmap(bmp, 100, 100, false);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
