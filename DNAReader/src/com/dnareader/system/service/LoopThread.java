@@ -184,7 +184,8 @@ public class LoopThread implements Runnable {
 		        new NotificationCompat.Builder(context)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle("Result Ready")
-		        .setContentText("You result with id = " + r.getLongId() + " is ready");
+		        .setContentText("You result with id = " + r.getLongId() + " is ready")
+		        .setAutoCancel(true);
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(context, ResultActivity.class);
 		Bundle bundle = new Bundle();
