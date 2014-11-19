@@ -2,19 +2,28 @@ package com.dnareader.system.service;
 
 import java.io.ByteArrayOutputStream;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.dnareader.activities.MainActivity;
+import com.dnareader.activities.ResultActivity;
 import com.dnareader.data.Result;
 import com.dnareader.processing.Blast;
 import com.dnareader.processing.PreProcessing;
 import com.dnareader.system.ResultManager;
+import com.dnareader.v0.R;
 import com.googlecode.leptonica.android.Pix;
 
 public class LoopThread implements Runnable {
@@ -123,6 +132,10 @@ public class LoopThread implements Runnable {
 							r.setBlastXML(xml);
 							r.setHits(Blast.parseBlastXML(xml));
 							r.setState(Result.DONE);
+							SharedPreferences settings = context.getSharedPreferences(MainActivity.SETTINGS_FILE, 0);
+							if(settings.getBoolean("notifications", false)){
+								sendNotification(r, context);
+							}
 							Log.d(MainActivity.TAG, "Blast XML received");
 							ResultManager.updateResultState(context, r);
 							ResultManager.addHits(context, r);
@@ -160,10 +173,43 @@ public class LoopThread implements Runnable {
 		
 	}
 	
-	public static byte[] bitmapToByteArray(Bitmap bmp){
+	private static byte[] bitmapToByteArray(Bitmap bmp){
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bmp.compress(Bitmap.CompressFormat.PNG, 0, stream);
 		return stream.toByteArray();
+	}
+	
+	private static void sendNotification(Result r, Context context){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(context)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle("Result Ready")
+		        .setContentText("You result with id = " + r.getLongId() + " is ready");
+		// Creates an explicit intent for an Activity in your app
+		Intent resultIntent = new Intent(context, ResultActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putString("id", r.getId());
+		resultIntent.putExtras(bundle);
+
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(ResultActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager =
+		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(MainActivity.NOTIFICATION_ID, mBuilder.build());
 	}
 
 }

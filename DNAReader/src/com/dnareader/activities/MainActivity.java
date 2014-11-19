@@ -40,6 +40,7 @@ public class MainActivity extends DrawerActivity {
 	public static final String TAG = "DNAReader";
 	public static final String SETTINGS_FILE = "dna-reader-preferences";
 	public static final int REQUEST_IMAGE_CAPTURE = 0;
+	public static final int NOTIFICATION_ID = 1;
 	Uri fileUri = null;
 	public static Typeface caviarDreams;
 
