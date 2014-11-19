@@ -10,7 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.dnareader.system.DrawerActivity;
 import com.dnareader.v0.R;
@@ -18,8 +21,11 @@ import com.dnareader.v0.R;
 public class SettingsActivity extends DrawerActivity {
 	private CheckBox notifications;
 	private Spinner language;
+	private TextView compressionTitle;
+	private SeekBar compression;
+	private TextView compressionHelp;
 	private SharedPreferences settings;
-	
+
 	private boolean sendNotifications;
 
 	@Override
@@ -29,7 +35,7 @@ public class SettingsActivity extends DrawerActivity {
 		setContentView(R.layout.activity_settings);
 		settings = getSharedPreferences(MainActivity.SETTINGS_FILE, 0);
 		sendNotifications = settings.getBoolean("notifications", false);
-		
+
 		language = (Spinner) findViewById(R.id.settings_language_spinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
 				this, R.array.array_language,
@@ -41,14 +47,14 @@ public class SettingsActivity extends DrawerActivity {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
 		});
-		
+
 		notifications = (CheckBox) findViewById(R.id.settings_notification_checkbox);
 		notifications.setChecked(sendNotifications);
 		notifications.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -61,7 +67,62 @@ public class SettingsActivity extends DrawerActivity {
 				editor.commit();
 			}
 		});
+
+		compressionTitle = (TextView) findViewById(R.id.compression_title);
+		compressionTitle.setText(getResources().getString(
+				R.string.settings_image_compression));
 		createDrawerList();
+		compressionHelp = (TextView) findViewById(R.id.compression_help);
+		compression = (SeekBar) findViewById(R.id.compression_bar);
+		compression.setMax(4);
+		compression.setProgress(settings.getInt("compression", 2));
+		changeCompressionHint(settings.getInt("compression", 2));
+		compression.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putInt("compression", progress);
+				editor.commit();
+				changeCompressionHint(progress);
+			}
+		});
+	}
+
+	private void changeCompressionHint(int value) {
+		switch (value) {
+		case 0:
+			compressionHelp.setText(getResources().getString(R.string.settings_really_low_comp));
+			break;
+		case 1:
+			compressionHelp.setText(getResources().getString(R.string.settings_low_comp));
+			break;
+		case 2:
+			compressionHelp.setText(getResources().getString(R.string.settings_normal_comp));
+			break;
+		case 3:
+			compressionHelp.setText(getResources().getString(R.string.settings_high_comp));
+			break;
+		case 4:
+			compressionHelp.setText(getResources().getString(R.string.settings_really_high_comp));
+			break;
+		default:
+			compressionHelp.setText("Invalid Compression Value");
+			break;
+		}
 	}
 
 	@Override

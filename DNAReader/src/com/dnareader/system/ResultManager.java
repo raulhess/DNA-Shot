@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -188,14 +189,16 @@ public class ResultManager {
 			file.createNewFile();
 			fOut = new FileOutputStream(file);
 
-			img.compress(Bitmap.CompressFormat.JPEG, 50, fOut);
+			SharedPreferences settings = context.getSharedPreferences(
+					MainActivity.SETTINGS_FILE, 0);
+			int compression = settings.getInt("compression", 2) * 25;
+			img.compress(Bitmap.CompressFormat.JPEG, compression, fOut);
 			fOut.flush();
 			fOut.close();
 
-			Log.d(MainActivity.TAG, "Saved image:" + fullPath + " " + filename);
+			Log.d(MainActivity.TAG, "Saved image:" + fullPath + filename + " with [" + compression + "] compression");
 		} catch (Exception e) {
-			Log.d(MainActivity.TAG, "Couldn't save image:" + fullPath + " "
-					+ filename);
+			Log.d(MainActivity.TAG, "Couldn't save image:" + fullPath + filename);
 			e.printStackTrace();
 		}
 	}
@@ -210,7 +213,7 @@ public class ResultManager {
 				final BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inSampleSize = adjust;
 				bmp = BitmapFactory.decodeFile(fullPath, options);
-				if(adjust == 0)
+				if (adjust == 0)
 					bmp = Bitmap.createScaledBitmap(bmp, 100, 100, false);
 			}
 			if (bmp != null) {

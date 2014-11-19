@@ -37,10 +37,21 @@ public class TakePictureActivity extends DrawerActivity {
 			try {
 				Result r = new Result();
 				r.setState(Result.UNPROCESSED);
-				Bitmap bmp = BitmapFactory
-						.decodeByteArray(data, 0, data.length);
-				r.setThumbnail(getThumbnail(data));
-				r.setImage(bmp);
+				while(r.getImage() == null){
+					try{
+						r.setImage(BitmapFactory
+								.decodeByteArray(data, 0, data.length));
+					}catch(OutOfMemoryError e){
+						r.setImage(null);
+					}
+				}
+				while(r.getThumbnail() == null){
+					try{
+						r.setThumbnail(getThumbnail(data));
+					}catch(OutOfMemoryError e){
+						r.setThumbnail(null);
+					}
+				}
 				long id = ResultManager.addResult(getApplicationContext(), r);
 				r.setId(id);
 				pictureTaken();
