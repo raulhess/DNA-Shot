@@ -5,5 +5,31 @@
     android:background="@color/app_light_gray"
     android:orientation="vertical"
     tools:context="com.dnareader.activities.InfoActivity" >
+    
+     <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/app_gray" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:text="@string/about_title" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/app_gray" />
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:textSize="20sp"
+        android:text="@string/about" />
+    
+    
+    
 
 </LinearLayout>
