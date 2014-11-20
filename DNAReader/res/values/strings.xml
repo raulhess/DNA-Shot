@@ -19,9 +19,11 @@
     <color name="app_soft_blue">#B4DEDB</color>
 
     <string name="action_search">Search</string>
+    <string name="action_delete_result">Delete Result</string>
     <string name="cancel">Cancel</string>
     <string name="clear_results_title">Clear all results?</string>
     <string name="confirm">Confirm</string>
+    <string name="delete_result_title">Delete Result</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="menu_take_picture">CAMERA</string>

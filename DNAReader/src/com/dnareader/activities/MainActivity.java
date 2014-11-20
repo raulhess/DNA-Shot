@@ -160,7 +160,9 @@ public class MainActivity extends DrawerActivity {
 
 		startThread();
 		listResults = receivedListResults;
-//		load();
+		if(listResults == null){
+			load();	
+		}
 	}
 
 	public void goTakePicture(View v) {

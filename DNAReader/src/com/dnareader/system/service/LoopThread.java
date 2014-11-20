@@ -52,6 +52,7 @@ public class LoopThread implements Runnable {
 			Log.d(MainActivity.TAG, "Looping...");
 			try {				
 				for (Result r : MainActivity.listResults) {
+					int position = MainActivity.listResults.indexOf(r);
 					if (r.getState() != Result.DONE && r.getState() != Result.ERROR){
 						done = false;
 					}
@@ -134,7 +135,7 @@ public class LoopThread implements Runnable {
 							r.setState(Result.DONE);
 							SharedPreferences settings = context.getSharedPreferences(MainActivity.SETTINGS_FILE, 0);
 							if(settings.getBoolean("notifications", false)){
-								sendNotification(r, context);
+								sendNotification(r, context, position);
 							}
 							Log.d(MainActivity.TAG, "Blast XML received");
 							ResultManager.updateResultState(context, r);
@@ -179,7 +180,7 @@ public class LoopThread implements Runnable {
 		return stream.toByteArray();
 	}
 	
-	private static void sendNotification(Result r, Context context){
+	private static void sendNotification(Result r, Context context, int position){
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(context)
 		        .setSmallIcon(R.drawable.ic_launcher)
@@ -190,6 +191,7 @@ public class LoopThread implements Runnable {
 		Intent resultIntent = new Intent(context, ResultActivity.class);
 		Bundle bundle = new Bundle();
 		bundle.putString("id", r.getId());
+		bundle.putInt("position", position);
 		resultIntent.putExtras(bundle);
 
 		// The stack builder object will contain an artificial back stack for the

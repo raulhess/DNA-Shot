@@ -60,6 +60,14 @@ public class ResultManager {
 		db.close();
 
 	}
+	
+	public static void deleteResult(Context context, long id) {
+		ResultDatabase db = new ResultDatabase(context);
+		db.open();
+		db.deleteFullResult(id, loadHits(context, id));
+		db.close();
+
+	}
 
 	public static void updateResultState(Context context, Result r) {
 		ResultDatabase db = new ResultDatabase(context);

@@ -1,12 +1,16 @@
 package com.dnareader.system;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.dnareader.activities.MainActivity;
 import com.dnareader.data.Hit;
 import com.dnareader.data.Hsp;
 import com.dnareader.data.Result;
@@ -140,6 +144,12 @@ public class ResultDatabase {
 				KEY_OCR, KEY_XML}, null, null, null,
 				null, null);
 	}
+	
+	public Cursor loadResult(long id) {
+		return db.query(TABLENAME_RESULT, new String[] { KEY_ID, KEY_STATE,
+				KEY_OCR, KEY_XML}, KEY_ID + "=" + id, null, null,
+				null, null);
+	}
 
 	public Cursor loadHits(long id) {
 		return db.query(TABLENAME_HIT, new String[] { KEY_HIT_ID, KEY_HITNAME,
@@ -191,6 +201,19 @@ public class ResultDatabase {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteFullResult(long id,List<Hit> hits){
+		Log.d(MainActivity.TAG, "Deleting result with id: " + id);
+		for(Hit h : hits){
+			deleteHsps(h.getLongHit_id());
+			deleteHits(h.getLongHit_id());
+		}
+		boolean deleted = deleteResult(id);
+		if(deleted)
+			Log.d(MainActivity.TAG, "<<Deleted>>");
+		else
+			Log.d(MainActivity.TAG, "<<Didn't Delete>>");
 	}
 
 }
