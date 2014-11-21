@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.activities;
 
 import java.util.List;
 
@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Hit;
-import com.dnareader.data.Result;
 import com.dnareader.v0.R;
+import com.dnashot.data.Hit;
+import com.dnashot.data.Result;
+import com.dnashot.system.HitsAdapter;
+import com.dnashot.system.ResultManager;
 
 public class FragmentResultHits extends Fragment {
 	

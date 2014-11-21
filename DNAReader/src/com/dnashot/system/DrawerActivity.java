@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,11 +9,11 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.dnareader.activities.InfoActivity;
-import com.dnareader.activities.SettingsActivity;
-import com.dnareader.activities.TakePictureActivity;
-import com.dnareader.activities.UploadPictureActivity;
 import com.dnareader.v0.R;
+import com.dnashot.activities.InfoActivity;
+import com.dnashot.activities.SettingsActivity;
+import com.dnashot.activities.TakePictureActivity;
+import com.dnashot.activities.UploadPictureActivity;
 
 @SuppressLint("InflateParams")
 public class DrawerActivity extends Activity implements

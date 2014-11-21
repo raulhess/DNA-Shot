@@ -1,4 +1,4 @@
-package com.dnareader.activities;
+package com.dnashot.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,11 +15,13 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.dnareader.system.DrawerActivity;
 import com.dnareader.v0.R;
+import com.dnashot.system.DrawerActivity;
 
 public class SettingsActivity extends DrawerActivity {
+	private TextView notificationTitle;
 	private CheckBox notifications;
+	private TextView languageTitle;
 	private Spinner language;
 	private TextView compressionTitle;
 	private SeekBar compression;
@@ -34,6 +36,8 @@ public class SettingsActivity extends DrawerActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.activity_settings);
 		settings = getSharedPreferences(MainActivity.SETTINGS_FILE, 0);
+		notificationTitle = (TextView) findViewById(R.id.notification_title);
+		notificationTitle.setText("Notifications");
 		sendNotifications = settings.getBoolean("notifications", false);
 
 		language = (Spinner) findViewById(R.id.settings_language_spinner);
@@ -55,6 +59,9 @@ public class SettingsActivity extends DrawerActivity {
 			}
 		});
 
+		languageTitle = (TextView) findViewById(R.id.language_title);
+		languageTitle.setText("Language");
+		
 		notifications = (CheckBox) findViewById(R.id.settings_notification_checkbox);
 		notifications.setChecked(sendNotifications);
 		notifications.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -80,16 +87,10 @@ public class SettingsActivity extends DrawerActivity {
 		compression.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			
 			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onStopTrackingTouch(SeekBar seekBar) {}
 			
 			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onStartTrackingTouch(SeekBar seekBar) {}
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
@@ -105,19 +106,19 @@ public class SettingsActivity extends DrawerActivity {
 	private void changeCompressionHint(int value) {
 		switch (value) {
 		case 0:
-			compressionHelp.setText(getResources().getString(R.string.settings_really_low_comp));
+			compressionHelp.setText(getResources().getString(R.string.settings_really_high_comp));
 			break;
 		case 1:
-			compressionHelp.setText(getResources().getString(R.string.settings_low_comp));
+			compressionHelp.setText(getResources().getString(R.string.settings_high_comp));
 			break;
 		case 2:
 			compressionHelp.setText(getResources().getString(R.string.settings_normal_comp));
 			break;
 		case 3:
-			compressionHelp.setText(getResources().getString(R.string.settings_high_comp));
+			compressionHelp.setText(getResources().getString(R.string.settings_low_comp));
 			break;
 		case 4:
-			compressionHelp.setText(getResources().getString(R.string.settings_really_high_comp));
+			compressionHelp.setText(getResources().getString(R.string.settings_really_low_comp));
 			break;
 		default:
 			compressionHelp.setText("Invalid Compression Value");

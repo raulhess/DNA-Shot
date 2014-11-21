@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.activities;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Result;
 import com.dnareader.v0.R;
+import com.dnashot.data.Result;
+import com.dnashot.system.ResultManager;
 
 public class FragmentResultDebug extends Fragment {
 

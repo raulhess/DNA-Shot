@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.dnareader.activities.SplashScreen"
+            android:name="com.dnashot.activities.SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
@@ -35,15 +35,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.dnareader.activities.MainActivity"
+            android:name="com.dnashot.activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.dnareader.activities.InfoActivity"
+            android:name="com.dnashot.activities.InfoActivity"
             android:label="@string/title_activity_info"
-            android:parentActivityName="com.dnareader.activities.MainActivity"
+            android:parentActivityName="com.dnashot.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -51,9 +51,9 @@
  >
         </activity>
         <activity
-            android:name="com.dnareader.activities.SettingsActivity"
+            android:name="com.dnashot.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="com.dnareader.activities.MainActivity"
+            android:parentActivityName="com.dnashot.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,9 +61,9 @@
  >
         </activity>
         <activity
-            android:name="com.dnareader.activities.TakePictureActivity"
+            android:name="com.dnashot.activities.TakePictureActivity"
             android:label="@string/title_activity_take_picture"
-            android:parentActivityName="com.dnareader.activities.MainActivity"
+            android:parentActivityName="com.dnashot.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -71,9 +71,9 @@
  >
         </activity>
         <activity
-            android:name="com.dnareader.activities.UploadPictureActivity"
+            android:name="com.dnashot.activities.UploadPictureActivity"
             android:label="@string/title_activity_upload_picture"
-            android:parentActivityName="com.dnareader.activities.MainActivity"
+            android:parentActivityName="com.dnashot.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -81,9 +81,9 @@
  >
         </activity>
         <activity
-            android:name="com.dnareader.activities.ResultActivity"
+            android:name="com.dnashot.activities.ResultActivity"
             android:label="@string/title_activity_result"
-            android:parentActivityName="com.dnareader.activities.MainActivity"
+            android:parentActivityName="com.dnashot.activities.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

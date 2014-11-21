@@ -1,12 +1,12 @@
-package com.dnareader.system.service;
+package com.dnashot.system.service;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Result;
-import com.dnareader.system.ResultManager;
+import com.dnashot.activities.MainActivity;
+import com.dnashot.data.Result;
+import com.dnashot.system.ResultManager;
 
 public class ResultProcessingManager {
 	

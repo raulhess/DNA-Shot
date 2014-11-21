@@ -1,4 +1,4 @@
-package com.dnareader.processing;
+package com.dnashot.processing;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,8 +20,8 @@ import org.xml.sax.XMLReader;
 
 import android.util.Log;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Hit;
+import com.dnashot.activities.MainActivity;
+import com.dnashot.data.Hit;
 
 public class Blast {
 

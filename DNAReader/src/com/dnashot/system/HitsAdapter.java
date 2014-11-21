@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.dnareader.data.Hit;
-import com.dnareader.data.Hsp;
 import com.dnareader.v0.R;
+import com.dnashot.data.Hit;
+import com.dnashot.data.Hsp;
 
 public class HitsAdapter extends BaseExpandableListAdapter {
 	Context context;

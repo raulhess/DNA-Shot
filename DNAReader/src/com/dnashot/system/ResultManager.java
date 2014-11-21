@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,17 +14,17 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Hit;
-import com.dnareader.data.Hsp;
-import com.dnareader.data.Result;
+import com.dnashot.activities.MainActivity;
+import com.dnashot.data.Hit;
+import com.dnashot.data.Hsp;
+import com.dnashot.data.Result;
 
 public class ResultManager {
 	public static final String FILEPREFIX = "result-";
 	public static final String IMG = "-img";
 	public static final String PREPROCESSED_IMG = "-imgPre";
 	public static final String THUMBNAIL = "-imgThumbnail";
-	public static final String DIRECTORY = "/DNAShot/";
+	public static final String DIRECTORY = "/DNAShot/imgs/";
 
 	private static Cursor resultsCursor;
 	private static Cursor hitsCursor;
@@ -35,7 +35,7 @@ public class ResultManager {
 		db.open();
 		long id = db.insertResult(r);
 		db.close();
-		saveImage(context, FILEPREFIX + id + IMG, r.getImage());
+		saveFullImage(context, id, r.getImage());
 		return id;
 	}
 
@@ -60,7 +60,7 @@ public class ResultManager {
 		db.close();
 
 	}
-	
+
 	public static void deleteResult(Context context, long id) {
 		ResultDatabase db = new ResultDatabase(context);
 		db.open();
@@ -201,7 +201,7 @@ public class ResultManager {
 					MainActivity.SETTINGS_FILE, 0);
 			int compression = settings.getInt("compression", 2) * 25;
 			img.compress(Bitmap.CompressFormat.JPEG, compression, fOut);
-			
+
 			fOut.flush();
 			fOut.close();
 
@@ -213,21 +213,28 @@ public class ResultManager {
 		}
 	}
 
-	public static Bitmap loadImage(Context context, String filename, int adjust) {
+	public static Bitmap loadImage(String filename, int adjust, boolean isThumbnail) {
 		String fullPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + DIRECTORY + filename;
-		return loadImage(fullPath, adjust);
-	}
-	
-	public static Bitmap loadImage(String fullPath, int adjust) {		
 		Log.d(MainActivity.TAG, "Loading image:" + fullPath);
 		Bitmap bmp = null;
 		try {
 			if (isExternalStorageReadable()) {
 				final BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inSampleSize = adjust;
-				bmp = BitmapFactory.decodeFile(fullPath, options);
-				if(adjust == 0)
+
+				boolean done = false;
+				int downsampleBy = adjust;
+				while (!done) {
+					try {
+						Log.d(MainActivity.TAG, "Tried to load image [" + downsampleBy + " times]");
+						bmp = BitmapFactory.decodeFile(fullPath, options);
+						done = true;
+					} catch (OutOfMemoryError e) {
+						// Ignore. Try again.
+					}
+					options.inSampleSize = downsampleBy++;
+				}
+				if (isThumbnail)
 					bmp = Bitmap.createScaledBitmap(bmp, 100, 100, false);
 			}
 			if (bmp != null) {
@@ -237,22 +244,22 @@ public class ResultManager {
 			}
 			return bmp;
 		} catch (Exception e) {
-			Log.e("getThumbnail() on external storage", e.getMessage());
+			e.printStackTrace();
 			Log.d(MainActivity.TAG, "Couldn't load image:" + fullPath);
 			return null;
 		}
 	}
-	
-	public static Bitmap adjustImage(Bitmap bitmap, int adjust) {		
+
+	public static Bitmap adjustImage(Bitmap bitmap, int adjust) {
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = adjust;
 		return Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / adjust,
 				bitmap.getHeight() / adjust, false);
 	}
-	
+
 	public static Bitmap loadFullImage(Context context, long id, int adjust) {
 		String filename = FILEPREFIX + id + IMG;
-		return loadImage(context, filename, adjust);
+		return loadImage(filename, adjust, false);
 	}
 
 	public static void saveFullImage(Context context, long id, Bitmap bmp) {
@@ -267,15 +274,15 @@ public class ResultManager {
 
 	public static Bitmap loadThumbnail(Context context, long id) {
 		String filename = FILEPREFIX + id + IMG;
-		return loadImage(context, filename, 0);
+		return loadImage(filename, 0, true);
 	}
 
 	public static Bitmap loadPreImage(Context context, long id, int adjust) {
 		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
-		return loadImage(context, filename, adjust);
+		return loadImage(filename, adjust, false);
 	}
-	
-	public static Bitmap getThumbnail(Bitmap bitmap) {		
+
+	public static Bitmap getThumbnail(Bitmap bitmap) {
 		return Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 	}
 

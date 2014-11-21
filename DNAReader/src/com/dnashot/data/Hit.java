@@ -1,4 +1,4 @@
-package com.dnareader.data;
+package com.dnashot.data;
 
 import java.util.ArrayList;
 import java.util.List;

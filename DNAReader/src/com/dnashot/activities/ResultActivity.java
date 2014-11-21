@@ -1,12 +1,9 @@
-package com.dnareader.activities;
+package com.dnashot.activities;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,11 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import com.dnareader.data.Result;
-import com.dnareader.system.FragmentResultDebug;
-import com.dnareader.system.FragmentResultHits;
-import com.dnareader.system.ResultManager;
 import com.dnareader.v0.R;
+import com.dnashot.data.Result;
 
 public class ResultActivity extends FragmentActivity implements ActionBar.TabListener {
 	
@@ -95,12 +89,6 @@ public class ResultActivity extends FragmentActivity implements ActionBar.TabLis
 			}
 		}
 		
-		//createDrawerList();
-		
-	}
-	
-	private void close(){
-		this.finish();
 	}
 
 	@Override
@@ -152,39 +140,12 @@ public class ResultActivity extends FragmentActivity implements ActionBar.TabLis
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_delete_result:
-			DialogFragment clearResults = new DeleteResultDialogFragment();
+			DialogFragment clearResults = new DeleteResultDialogFragment(this, resultId, resultPosition, true);
 			clearResults.setCancelable(true);
 			clearResults.show(getFragmentManager(), MainActivity.TAG);
 			return true;
 		}
 		return false;
-	}
-    
-    public class DeleteResultDialogFragment extends DialogFragment {
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			// Use the Builder class for convenient dialog construction
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle(R.string.delete_result_title)
-					.setPositiveButton(R.string.confirm,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									ResultManager.deleteResult(getApplicationContext(), resultId);
-									MainActivity.listResults.remove(resultPosition);
-									close();
-								}
-							})
-					.setNegativeButton(R.string.cancel,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// User cancelled the dialog
-								}
-							});
-			// Create the AlertDialog object and return it
-			return builder.create();
-		}
 	}
     
     @Override

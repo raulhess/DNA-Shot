@@ -27,27 +27,27 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="menu_take_picture">CAMERA</string>
-    <string name="menu_upload_picture">LOAD</string>
+    <string name="menu_upload_picture">UPLOAD</string>
     <string name="menu_results">RESULTS</string>
     <string name="menu_settings">SETTINGS</string>
     <string name="menu_info">INFORMATION</string>
     <string name="menu_content_title">Welcome!</string>
     <string name="about_title">About:</string>    
     <string name="about">DNA Reader is an app developed by students of Federal University of Paraná, with the intent of recognize DNA sequences from photos.</string>
-	<string name="menu_pictures_title">Send a photo</string>
+	<string name="menu_pictures_title">Send a picture</string>
 	<string name="menu_results_title">Last results</string>
 	<string name="menu_results_more">MORE RESULTS</string>
     <string name="test">Test!</string>
     <string name="clear_result">Clear Results</string>
     <string name="help_menu_img">Menu Image</string>
     <string name="help_result_img">Result Image</string>
-    <string name="help_navigation_img">Navegation Image</string>
+    <string name="help_navigation_img">Navigation Image</string>
     <string name="capture">CAPTURE</string>
-    <string name="title_activity_take_picture">Capture Photo</string>
-    <string name="title_activity_upload_picture">Load Photo</string>
+    <string name="title_activity_take_picture">Capture Picture</string>
+    <string name="title_activity_upload_picture">Load Picture</string>
     <string name="title_activity_results">Results</string>
-    <string name="title_activity_info">About</string>
-    <string name="title_activity_settings">Configurations</string>
+    <string name="title_activity_info">Info</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="result_title">Result:</string>
     <string name="result_loading">Loading</string>
     <string name="result_waiting">Waiting response</string>
@@ -61,11 +61,11 @@
     <string name="result_no_result">You did not make any search.</string>
     <string name="result_not_sent">Not Sent</string>
     <string name="settings_image_compression">Image Compression</string>
-    <string name="settings_really_low_comp">Warning! Images with this much compression lose too much quality and may not be recognized</string>
+    <string name="settings_really_low_comp">Warning! Very Low Compression</string>
     <string name="settings_low_comp">Low Compression</string>
     <string name="settings_normal_comp">Normal Compression</string>
     <string name="settings_high_comp">High Compression</string>
-    <string name="settings_really_high_comp">Warning! Images with this little compression are much larger and could slow down your application</string>
+    <string name="settings_really_high_comp">Warning! Very High Compression</string>
     <string name="title_activity_result">Result</string>
     <string name="notify_done_A">Your Result of ID: </string>
     <string name="notify_done_B">Already Done</string>
@@ -81,10 +81,12 @@
     <string name="BLAST_STARTED">BLAST search in progress</string>
     <string name="BLAST_FINISHED">BLAST search finished</string>
     <string name="DONE">Done</string>
-    <string name="ERROR">A processing error occurred</string>    
+    <string name="ERROR">A processing error occurred</string>
+    <string name="ERROR_OCR">An OCR error has occurred</string>    
     
     <string name="warning_not_sent">The selected item not initialized yet</string>
     <string name="warning_waiting">The selected item is being processed</string>
+    <string name="warning_ocr_error">It was not possible to identify a valid DNA sequence from the image</string>
 
 
     <string-array name="array_language">

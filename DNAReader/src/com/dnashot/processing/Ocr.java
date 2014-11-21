@@ -1,28 +1,28 @@
-package com.dnareader.processing;
+package com.dnashot.processing;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
-
-import com.dnareader.activities.MainActivity;
+import com.dnashot.activities.MainActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.googlecode.tesseract.android.TessBaseAPI.PageSegMode;
 
 
+@SuppressLint("DefaultLocale")
 public class Ocr {
 	
 	
 	
-	public static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/dnareader/";
+	public static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/DNAShot/lib/";
 	
 	// You should have the trained data file in assets folder
 	// You can get them at:
@@ -91,12 +91,9 @@ public class Ocr {
 	
 	public String doOcr(byte[] image){
 
-			final long startTime = System.currentTimeMillis();			
+			final long startTime = System.currentTimeMillis();
 
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inSampleSize = 4;
-
-			Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length,options);
+			Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
 		
 			// Convert to ARGB_8888, required by tess
 			//bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);			

@@ -4,8 +4,15 @@
     android:layout_height="match_parent"
     android:background="@color/app_light_gray"
     android:orientation="vertical"
-    tools:context="com.dnareader.activities.InfoActivity" >
+    tools:context="com.dnashot.activities.InfoActivity" >
 
+    <TextView 
+        android:id="@+id/notification_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="18sp"/>
+    
     <CheckBox
         android:id="@+id/settings_notification_checkbox"
         android:layout_width="fill_parent"
@@ -23,6 +30,13 @@
         android:layout_marginStart="5dp"
         android:background="@color/app_gray" />
 
+    <TextView 
+        android:id="@+id/language_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="18sp"/>
+    
     <Spinner
         android:id="@+id/settings_language_spinner"
         android:layout_width="fill_parent"

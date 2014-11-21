@@ -1,4 +1,4 @@
-package com.dnareader.processing;
+package com.dnashot.processing;
 
 import java.util.ArrayList;
 
@@ -6,8 +6,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.dnareader.data.Hit;
-import com.dnareader.data.Hsp;
+import com.dnashot.data.Hit;
+import com.dnashot.data.Hsp;
 
 public class SAXXMLHandler extends DefaultHandler {
 

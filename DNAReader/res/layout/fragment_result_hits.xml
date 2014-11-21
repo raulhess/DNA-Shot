@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/app_light_gray"
     android:orientation="vertical"
-    tools:context="com.dnareader.activities.ResultActivity" >
+    tools:context="com.dnashot.activities.ResultActivity" >
 
     <View
         android:layout_width="fill_parent"

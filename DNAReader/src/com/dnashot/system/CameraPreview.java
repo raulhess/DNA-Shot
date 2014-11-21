@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import java.io.IOException;
 

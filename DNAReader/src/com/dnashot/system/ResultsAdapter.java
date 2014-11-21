@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dnareader.data.Result;
 import com.dnareader.v0.R;
+import com.dnashot.data.Result;
 
 public class ResultsAdapter extends ArrayAdapter<Result> {
 	private final Activity context;
@@ -120,9 +120,9 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 						R.color.app_soft_blue));
 			break;
 
-		case Result.ERROR:
+		case Result.ERROR_OCR:
 			status.setText("Status: "
-					+ context.getResources().getString(R.string.ERROR));
+					+ context.getResources().getString(R.string.ERROR_OCR));
 			ocrIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.eye_error));
 			ocrIcon.setAlpha(1F);
 			dnaIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.dna_error));

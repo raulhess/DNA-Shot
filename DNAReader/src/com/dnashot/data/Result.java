@@ -1,4 +1,4 @@
-package com.dnareader.data;
+package com.dnashot.data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +16,8 @@ public class Result implements Serializable{
 	public static final int PREPROCESSING_FINISHED = 6;
 	public static final int DONE = 10;
 	public static final int ERROR = -1;
+	public static final int ERROR_OCR = -2;
+	public static final int ERROR_BLAST = -3;
 	
 	private static final long serialVersionUID = 982757938298536428L;
 	private long id;

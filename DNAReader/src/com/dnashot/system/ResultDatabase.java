@@ -1,4 +1,4 @@
-package com.dnareader.system;
+package com.dnashot.system;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.dnareader.activities.MainActivity;
-import com.dnareader.data.Hit;
-import com.dnareader.data.Hsp;
-import com.dnareader.data.Result;
+import com.dnashot.activities.MainActivity;
+import com.dnashot.data.Hit;
+import com.dnashot.data.Hsp;
+import com.dnashot.data.Result;
 
 public class ResultDatabase {
 	public static final String DATABASE_NAME = "db_Results";
@@ -26,6 +26,7 @@ public class ResultDatabase {
 	static String KEY_STATE = "state";
 	static String KEY_OCR = "ocr";
 	static String KEY_XML = "xml";
+	static String KEY_BLAST = "blast";
 
 	static String KEY_RESULT_FOREIGN_ID = "result";
 	static String KEY_HIT_ID = "hitid";
@@ -50,7 +51,7 @@ public class ResultDatabase {
 
 	String SQL_CREATE_TABLE_RESULT = "create table " + TABLENAME_RESULT + " ("
 			+ KEY_ID + " INTEGER PRIMARY KEY autoincrement, " + KEY_STATE
-			+ " INTEGER not null, " + KEY_OCR + " TEXT, " + KEY_XML + " TEXT );";
+			+ " INTEGER not null, "+ KEY_BLAST + " TEXT, " + KEY_OCR + " TEXT, " + KEY_XML + " TEXT );";
 	String SQL_CREATE_TABLE_HITS = "create table " + TABLENAME_HIT + " ("
 			+ KEY_HIT_ID + " INTEGER PRIMARY KEY autoincrement, " + KEY_HITNAME
 			+ " TEXT not null, " + KEY_LEN + " INTEGER not null, "
@@ -112,6 +113,7 @@ public class ResultDatabase {
 		fields.put(KEY_STATE, result.getState());
 		fields.put(KEY_OCR, result.getOcrText());
 		fields.put(KEY_XML, result.getBlastXML());
+		fields.put(KEY_BLAST, result.getRid());
 		return db.insert(TABLENAME_RESULT, null, fields);
 	}
 
@@ -141,13 +143,7 @@ public class ResultDatabase {
 
 	public Cursor loadResults() {
 		return db.query(TABLENAME_RESULT, new String[] { KEY_ID, KEY_STATE,
-				KEY_OCR, KEY_XML}, null, null, null,
-				null, null);
-	}
-	
-	public Cursor loadResult(long id) {
-		return db.query(TABLENAME_RESULT, new String[] { KEY_ID, KEY_STATE,
-				KEY_OCR, KEY_XML}, KEY_ID + "=" + id, null, null,
+				KEY_OCR, KEY_XML, KEY_BLAST}, null, null, null,
 				null, null);
 	}
 
@@ -169,6 +165,7 @@ public class ResultDatabase {
 		ContentValues fields = new ContentValues();
 		fields.put(KEY_OCR, r.getOcrText());
 		fields.put(KEY_XML, r.getBlastXML());
+		fields.put(KEY_BLAST, r.getRid());
 		return db.update(TABLENAME_RESULT, fields, KEY_ID + "=" + r.getId(), null) > 0;
 	}
 

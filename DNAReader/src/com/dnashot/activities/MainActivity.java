@@ -1,9 +1,10 @@
-package com.dnareader.activities;
+package com.dnashot.activities;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -25,28 +26,29 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dnareader.data.Result;
-import com.dnareader.processing.Blast;
-import com.dnareader.processing.Ocr;
-import com.dnareader.system.DrawerActivity;
-import com.dnareader.system.ResultManager;
-import com.dnareader.system.ResultsAdapter;
-import com.dnareader.system.service.LoopThread;
-import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
+import com.dnashot.data.Result;
+import com.dnashot.processing.Blast;
+import com.dnashot.processing.Ocr;
+import com.dnashot.system.DrawerActivity;
+import com.dnashot.system.ResultManager;
+import com.dnashot.system.ResultsAdapter;
+import com.dnashot.system.service.LoopThread;
+import com.dnashot.system.service.ResultProcessingManager;
 
 @SuppressLint("InflateParams")
 public class MainActivity extends DrawerActivity {
 	public static final String TAG = "DNAReader";
 	public static final String SETTINGS_FILE = "dna-reader-preferences";
-	public static final int NOTIFICATION_ID = 1;		
+	public static final int NOTIFICATION_ID = 1;
 	private static final int SELECT_PICTURE = 1;
-	private String selectedImagePath;	
-	
+	private String selectedImagePath;
+
 	public static Typeface caviarDreams;
 	private ActionBarDrawerToggle drawerToggle;
 
@@ -63,7 +65,9 @@ public class MainActivity extends DrawerActivity {
 
 	public static Handler handler;
 	static Runnable checkResultsLoop;
-	private static Thread thread;
+	public static Thread thread;
+
+	private DeleteResultDialogFragment deleteFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +98,7 @@ public class MainActivity extends DrawerActivity {
 
 		};
 		drawerLayout.setDrawerListener(drawerToggle);
-		
+
 		// instantiates the main menu views
 		// lastResultsList = (ListView) findViewById(R.id.menu_last_results);
 		takePicture = (TextView) findViewById(R.id.menu_take_picture);
@@ -125,12 +129,7 @@ public class MainActivity extends DrawerActivity {
 					Toast.makeText(
 							getApplicationContext(),
 							getResources().getString(R.string.warning_not_sent),
-							Toast.LENGTH_SHORT).show();
-					break;
-				case 1:
-					Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.warning_waiting),
-							Toast.LENGTH_SHORT).show();
+							Toast.LENGTH_LONG).show();
 					break;
 				case Result.DONE:
 					Intent it = new Intent(getApplicationContext(),
@@ -141,12 +140,32 @@ public class MainActivity extends DrawerActivity {
 					it.putExtras(bundle);
 					startActivity(it);
 					break;
+				case Result.ERROR_OCR:
+					Toast.makeText(
+							getApplicationContext(),
+							getResources()
+									.getString(R.string.warning_ocr_error),
+							Toast.LENGTH_LONG).show();
 				default:
 					Log.d(MainActivity.TAG, "Unknown result state");
 					break;
 				}
 			}
 
+		});
+		final Activity caller = this;
+		results.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				Result target = listResults.get(position);
+				deleteFragment = new DeleteResultDialogFragment(caller,
+						target.getLongId(), position, false);
+				deleteFragment.setCancelable(true);
+				deleteFragment.show(getFragmentManager(), TAG);
+				return false;
+			}
 		});
 
 		if (checkResultsLoop == null)
@@ -160,8 +179,8 @@ public class MainActivity extends DrawerActivity {
 
 		startThread();
 		listResults = receivedListResults;
-		if(listResults == null){
-			load();	
+		if (listResults == null) {
+			load();
 		}
 	}
 
@@ -196,11 +215,13 @@ public class MainActivity extends DrawerActivity {
 					// IN THIS FORM -
 					// file:///storage/emulated/0/Android/data/com.dropbox.android/...
 					System.out.println("local image:" + selectedImagePath);
-					
-					ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());					
-					Bitmap bitmap = ResultManager.loadImage(selectedImagePath, 1);
+
+					ResultProcessingManager manager = new ResultProcessingManager(
+							getApplicationContext());
+					Bitmap bitmap = ResultManager.loadImage(selectedImagePath,
+							1, false);
 					manager.startProcessing(bitmap);
-					
+
 				} else {
 					System.out.println("picasa/dropbox image!");
 					loadPicasaImageFromGallery(selectedImageUri);
@@ -228,8 +249,10 @@ public class MainActivity extends DrawerActivity {
 							Bitmap bitmap = android.provider.MediaStore.Images.Media
 									.getBitmap(getContentResolver(), uri);
 							// THIS IS THE BITMAP IMAGE WE ARE LOOKING FOR.
-							ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());
-							manager.startProcessing(ResultManager.adjustImage(bitmap,1));
+							ResultProcessingManager manager = new ResultProcessingManager(
+									getApplicationContext());
+							manager.startProcessing(ResultManager.adjustImage(
+									bitmap, 1));
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
@@ -255,7 +278,6 @@ public class MainActivity extends DrawerActivity {
 		} else
 			return uri.getPath(); // FOR OI/ASTRO/Dropbox etc
 	}
-
 
 	private void load() {
 		try {
@@ -383,4 +405,5 @@ public class MainActivity extends DrawerActivity {
 		}
 
 	}
+
 }

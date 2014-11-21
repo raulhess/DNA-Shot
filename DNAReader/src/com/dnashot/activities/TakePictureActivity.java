@@ -1,4 +1,4 @@
-package com.dnareader.activities;
+package com.dnashot.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,10 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.dnareader.system.CameraPreview;
-import com.dnareader.system.DrawerActivity;
-import com.dnareader.system.service.ResultProcessingManager;
 import com.dnareader.v0.R;
+import com.dnashot.system.CameraPreview;
+import com.dnashot.system.DrawerActivity;
+import com.dnashot.system.service.ResultProcessingManager;
 
 public class TakePictureActivity extends DrawerActivity {
 	private FrameLayout mainFrameLayout;
@@ -117,8 +117,9 @@ public class TakePictureActivity extends DrawerActivity {
 
 	public void pictureTaken() {
 		mProgressDialogue.dismiss();
-		buttonTakePicture.setEnabled(true);
-		cameraPreview.startPreview();
+		this.finish();
+//		buttonTakePicture.setEnabled(true);
+//		cameraPreview.startPreview();
 	}
 
 	@Override

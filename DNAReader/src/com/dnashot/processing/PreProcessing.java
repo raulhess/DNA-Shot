@@ -1,4 +1,4 @@
-package com.dnareader.processing;
+package com.dnashot.processing;
 
 
 import java.io.ByteArrayOutputStream;
@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.dnareader.activities.MainActivity;
+import com.dnashot.activities.MainActivity;
 import com.googlecode.leptonica.android.Binarize;
 import com.googlecode.leptonica.android.Convert;
 import com.googlecode.leptonica.android.Pix;
