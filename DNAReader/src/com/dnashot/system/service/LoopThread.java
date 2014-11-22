@@ -80,13 +80,11 @@ public class LoopThread implements Runnable {
 							Pix threshold = p
 									.adaptativeThreshold(bitmapToByteArray(fullImage));
 							byte[] deskew = p.deskew(threshold);
-							result.setPreProcessedimage(BitmapFactory
-									.decodeByteArray(deskew, 0, deskew.length));
-
+							
+							ResultManager.savePreImage(context,result.getLongId(),(BitmapFactory.decodeByteArray(deskew, 0, deskew.length)));
 							result.setState(Result.PREPROCESSING_FINISHED);
 							ResultManager.updateResultState(context, result);
-							ResultManager.savePreImage(context, result.getLongId(),
-									result.getPreProcessedimage());
+													
 							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 						} catch (OutOfMemoryError e) {
 							e.printStackTrace();

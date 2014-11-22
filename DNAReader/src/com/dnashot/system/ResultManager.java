@@ -28,14 +28,16 @@ public class ResultManager {
 
 	private static Cursor resultsCursor;
 	private static Cursor hitsCursor;
-	private static Cursor hspsCursor;
+	private static Cursor hspsCursor;	
 
-	public static long addResult(Context context, Result r) {
+	public static long addResult(Context context, Result r, Bitmap bitmap) {
 		ResultDatabase db = new ResultDatabase(context);
 		db.open();
 		long id = db.insertResult(r);
 		db.close();
-		saveFullImage(context, id, r.getImage());
+		saveFullImage(context, id, bitmap);
+		r.setThumbnail(getThumbnail(bitmap));
+		saveThumbnail(context, id, r.getThumbnail());
 		return id;
 	}
 
@@ -213,7 +215,7 @@ public class ResultManager {
 		}
 	}
 
-	public static Bitmap loadImage(String filename, int adjust, boolean isThumbnail) {
+	public static Bitmap loadImage(String filename, int adjust) {
 		String fullPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + DIRECTORY + filename;
 		Log.d(MainActivity.TAG, "Loading image:" + fullPath);
@@ -222,7 +224,8 @@ public class ResultManager {
 			if (isExternalStorageReadable()) {
 				final BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inSampleSize = adjust;
-
+				options.inPurgeable = true;
+				
 				boolean done = false;
 				int downsampleBy = adjust;
 				while (!done) {
@@ -235,8 +238,6 @@ public class ResultManager {
 					}
 					options.inSampleSize = downsampleBy++;
 				}
-				if (isThumbnail)
-					bmp = Bitmap.createScaledBitmap(bmp, 100, 100, false);
 			}
 			if (bmp != null) {
 				Log.d(MainActivity.TAG, "Succesfuly loaded image:" + fullPath);
@@ -251,21 +252,26 @@ public class ResultManager {
 		}
 	}
 
-	public static Bitmap adjustImage(Bitmap bitmap, int adjust) {
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inSampleSize = adjust;
-		return Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / adjust,
-				bitmap.getHeight() / adjust, false);
-	}
+//	public static Bitmap adjustImage(Bitmap bitmap, int adjust) {
+//		final BitmapFactory.Options options = new BitmapFactory.Options();
+//		options.inSampleSize = adjust;
+//		return Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / adjust,
+//				bitmap.getHeight() / adjust, false);
+//	}
 
 	public static Bitmap loadFullImage(Context context, long id, int adjust) {
 		String filename = FILEPREFIX + id + IMG;
-		return loadImage(filename, adjust, false);
+		return loadImage(filename, adjust);
 	}
 
 	public static void saveFullImage(Context context, long id, Bitmap bmp) {
 		String filename = FILEPREFIX + id + IMG;
 		saveImage(context, filename, bmp);
+	}
+	
+	public static Bitmap loadPreImage(Context context, long id, int adjust) {
+		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
+		return loadImage(filename, adjust);
 	}
 
 	public static void savePreImage(Context context, long id, Bitmap bmp) {
@@ -274,13 +280,22 @@ public class ResultManager {
 	}
 
 	public static Bitmap loadThumbnail(Context context, long id) {
-		String filename = FILEPREFIX + id + IMG;
-		return loadImage(filename, 0, true);
+		String filename = FILEPREFIX + id + THUMBNAIL;
+		Bitmap thumbnail = loadImage(filename, 1);
+		if (thumbnail != null){
+			return thumbnail;
+		}else{
+			//create and save missing thumbnails
+			thumbnail = getThumbnail(loadFullImage(context, id, 1));
+			saveThumbnail(context, id, thumbnail);
+			return thumbnail;
+		}
+		
 	}
-
-	public static Bitmap loadPreImage(Context context, long id, int adjust) {
-		String filename = FILEPREFIX + id + PREPROCESSED_IMG;
-		return loadImage(filename, adjust, false);
+	
+	public static void saveThumbnail(Context context, long id, Bitmap bmp) {
+		String filename = FILEPREFIX + id + THUMBNAIL;
+		saveImage(context, filename, bmp);
 	}
 
 	public static Bitmap getThumbnail(Bitmap bitmap) {

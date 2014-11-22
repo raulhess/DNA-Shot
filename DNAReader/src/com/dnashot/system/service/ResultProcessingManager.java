@@ -28,9 +28,7 @@ public class ResultProcessingManager implements Runnable{
 		Log.d(MainActivity.TAG, "Starting an image");
 		Result r = new Result();
 		r.setState(Result.UNPROCESSED);		
-		r.setThumbnail(ResultManager.getThumbnail(bitmap));
-		r.setImage(bitmap);
-		long id = ResultManager.addResult(context, r);
+		long id = ResultManager.addResult(context, r, bitmap);
 		r.setId(id);
 		
 		MainActivity.listResults.add(0, r);		

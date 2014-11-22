@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.dnashot.activities.InfoActivity;
 import com.dnashot.activities.SettingsActivity;
 import com.dnashot.activities.TakePictureActivity;
-import com.dnashot.activities.UploadPictureActivity;
 import com.dnashot.v0.R;
 
 @SuppressLint("InflateParams")
@@ -58,7 +57,7 @@ public class DrawerActivity extends Activity implements
 			it = new Intent(getApplicationContext(), TakePictureActivity.class);
 			break;
 		case 1:
-			it = new Intent(getApplicationContext(), UploadPictureActivity.class);
+			//it = new Intent(getApplicationContext(), UploadPictureActivity.class);
 			break;
 		case 2:
 			it = new Intent(getApplicationContext(), InfoActivity.class);

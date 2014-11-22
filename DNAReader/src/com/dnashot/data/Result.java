@@ -21,9 +21,7 @@ public class Result implements Serializable{
 	
 	private static final long serialVersionUID = 982757938298536428L;
 	private long id;
-	private Bitmap thumbnail;
-	private Bitmap image;
-	private Bitmap PreProcessedimage;
+	private Bitmap thumbnail;	
 	private Date date;
 	private String content;
 	private String ocrText;
@@ -72,14 +70,6 @@ public class Result implements Serializable{
 		this.thumbnail = image;
 	}
 	
-	public Bitmap getImage() {
-		return image;
-	}
-
-	public void setImage(Bitmap image) {
-		this.image = image;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -108,14 +98,6 @@ public class Result implements Serializable{
 		this.rid = rid;
 	}
 
-	public Bitmap getPreProcessedimage() {
-		return PreProcessedimage;
-	}
-
-	public void setPreProcessedimage(Bitmap preProcessedimage) {
-		PreProcessedimage = preProcessedimage;
-	}
-
 	public List<Hit> getHits() {
 		return hits;
 	}
@@ -123,7 +105,5 @@ public class Result implements Serializable{
 	public void setHits(List<Hit> hits) {
 		this.hits = hits;
 	}
-	
-	
 	
 }

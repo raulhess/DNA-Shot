@@ -216,7 +216,7 @@ public class MainActivity extends DrawerActivity {
 					
 					new Thread(new Runnable() {					
 						public void run() {							
-							Bitmap bitmap = ResultManager.loadImage(selectedImagePath, 1,false);
+							Bitmap bitmap = ResultManager.loadImage(selectedImagePath, 1);
 							ResultProcessingManager.startProcessing(bitmap,getApplicationContext());
 						}
 					}).start();
@@ -247,7 +247,7 @@ public class MainActivity extends DrawerActivity {
 							Bitmap bitmap = android.provider.MediaStore.Images.Media
 									.getBitmap(getContentResolver(), uri);
 							// THIS IS THE BITMAP IMAGE WE ARE LOOKING FOR.
-							ResultProcessingManager.startProcessing(ResultManager.adjustImage(bitmap,1),getApplicationContext());
+							ResultProcessingManager.startProcessing(bitmap,getApplicationContext());
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
