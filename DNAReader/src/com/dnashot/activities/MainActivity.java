@@ -125,11 +125,7 @@ public class MainActivity extends DrawerActivity {
 							getResources().getString(R.string.warning_not_sent),
 							Toast.LENGTH_LONG).show();
 					break;
-				case 1:
-					Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.warning_waiting),
-							Toast.LENGTH_SHORT).show();
-					break;
+				
 				case Result.DONE:
 					Intent it = new Intent(getApplicationContext(),
 							ResultActivity.class);
@@ -139,6 +135,12 @@ public class MainActivity extends DrawerActivity {
 					it.putExtras(bundle);
 					startActivity(it);
 					break;
+				case Result.ERROR_OCR:
+					Toast.makeText(
+							getApplicationContext(),
+							getResources()
+									.getString(R.string.warning_ocr_error),
+							Toast.LENGTH_LONG).show();
 				default:
 					Log.d(MainActivity.TAG, "Unknown result state");
 					break;
