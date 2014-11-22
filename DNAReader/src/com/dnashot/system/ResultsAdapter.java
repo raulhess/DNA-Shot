@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dnareader.v0.R;
 import com.dnashot.data.Result;
+import com.dnashot.v0.R;
 
 public class ResultsAdapter extends ArrayAdapter<Result> {
 	private final Activity context;

@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.dnareader.v0.R;
 import com.dnashot.data.Hit;
 import com.dnashot.data.Hsp;
+import com.dnashot.v0.R;
 
 public class HitsAdapter extends BaseExpandableListAdapter {
 	Context context;

@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.dnareader.v0.R;
 import com.dnashot.data.Result;
 import com.dnashot.system.ResultManager;
+import com.dnashot.v0.R;
 
 public class SplashScreen extends Activity {
 	private List<Result> listResults;

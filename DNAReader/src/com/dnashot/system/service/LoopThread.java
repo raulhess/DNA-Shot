@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.dnareader.v0.R;
 import com.dnashot.activities.MainActivity;
 import com.dnashot.activities.ResultActivity;
 import com.dnashot.data.Result;
@@ -25,6 +24,7 @@ import com.dnashot.processing.Blast;
 import com.dnashot.processing.Ocr;
 import com.dnashot.processing.PreProcessing;
 import com.dnashot.system.ResultManager;
+import com.dnashot.v0.R;
 import com.googlecode.leptonica.android.Pix;
 
 public class LoopThread implements Runnable {
@@ -57,7 +57,7 @@ public class LoopThread implements Runnable {
 				
 					int position = MainActivity.listResults.indexOf(result);
 					if (result.getState() != Result.DONE
-							&& result.getState() != Result.ERROR) {
+							&& result.getState() != Result.ERROR && result.getState() != Result.ERROR_OCR) {
 						done = false;
 					}
 

@@ -1,7 +1,5 @@
 package com.dnashot.system;
 
-import com.dnareader.v0.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.dnashot.v0.R;
 
 public class DrawerAdapter extends ArrayAdapter<String> {
 	private Context context;

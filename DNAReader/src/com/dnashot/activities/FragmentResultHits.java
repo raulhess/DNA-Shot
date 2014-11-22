@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.dnareader.v0.R;
 import com.dnashot.data.Hit;
 import com.dnashot.data.Result;
 import com.dnashot.system.HitsAdapter;
 import com.dnashot.system.ResultManager;
+import com.dnashot.v0.R;
 
 public class FragmentResultHits extends Fragment {
 	

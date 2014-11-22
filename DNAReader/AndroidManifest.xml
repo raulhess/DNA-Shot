@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dnareader.v0"
+    package="com.dnashot.v0"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -47,7 +47,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dnareader.v0.MainActivity" />
+                android:value="com.dnashot.v0.MainActivity" />
  >
         </activity>
         <activity
@@ -57,7 +57,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dnareader.v0.MainActivity" />
+                android:value="com.dnashot.v0.MainActivity" />
  >
         </activity>
         <activity
@@ -67,7 +67,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dnareader.v0.MainActivity" />
+                android:value="com.dnashot.v0.MainActivity" />
  >
         </activity>
         <activity
@@ -77,7 +77,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dnareader.v0.MainActivity" />
+                android:value="com.dnashot.v0.MainActivity" />
  >
         </activity>
         <activity
@@ -87,7 +87,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dnareader.v0.MainActivity" />
+                android:value="com.dnashot.v0.MainActivity" />
  >
         </activity>
     </application>

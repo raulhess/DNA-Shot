@@ -4,8 +4,8 @@ package com.dnashot.activities;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
-import com.dnareader.v0.R;
 import com.dnashot.system.DrawerActivity;
+import com.dnashot.v0.R;
 
 public class UploadPictureActivity extends DrawerActivity {
 	

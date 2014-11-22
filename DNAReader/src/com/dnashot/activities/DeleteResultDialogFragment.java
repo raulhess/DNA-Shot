@@ -7,8 +7,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.dnareader.v0.R;
 import com.dnashot.system.ResultManager;
+import com.dnashot.v0.R;
 
 public class DeleteResultDialogFragment extends DialogFragment {
 	private Activity activity;

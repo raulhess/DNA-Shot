@@ -15,8 +15,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.dnareader.v0.R;
 import com.dnashot.system.DrawerActivity;
+import com.dnashot.v0.R;
 
 public class SettingsActivity extends DrawerActivity {
 	private TextView notificationTitle;

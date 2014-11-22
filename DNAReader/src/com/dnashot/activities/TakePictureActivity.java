@@ -19,10 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.dnareader.v0.R;
 import com.dnashot.system.CameraPreview;
 import com.dnashot.system.DrawerActivity;
 import com.dnashot.system.service.ResultProcessingManager;
+import com.dnashot.v0.R;
 
 public class TakePictureActivity extends DrawerActivity {
 	private FrameLayout mainFrameLayout;

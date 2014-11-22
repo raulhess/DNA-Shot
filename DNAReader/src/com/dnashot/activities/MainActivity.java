@@ -31,17 +31,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dnareader.v0.R;
 import com.dnashot.data.Result;
 import com.dnashot.system.DrawerActivity;
 import com.dnashot.system.ResultManager;
 import com.dnashot.system.ResultsAdapter;
 import com.dnashot.system.service.ResultProcessingManager;
+import com.dnashot.v0.R;
 
 @SuppressLint("InflateParams")
 public class MainActivity extends DrawerActivity {
-	public static final String TAG = "DNAReader";
-	public static final String SETTINGS_FILE = "dna-reader-preferences";
+	public static final String TAG = "DNAShot";
+	public static final String SETTINGS_FILE = "dna-shot-preferences";
 	public static final int NOTIFICATION_ID = 1;		
 	private static final int SELECT_PICTURE = 1;
 	public static final int RELOAD_GUI = 1;		
@@ -140,6 +140,12 @@ public class MainActivity extends DrawerActivity {
 							getApplicationContext(),
 							getResources()
 									.getString(R.string.warning_ocr_error),
+							Toast.LENGTH_LONG).show();
+				case Result.ERROR:
+					Toast.makeText(
+							getApplicationContext(),
+							getResources()
+									.getString(R.string.ERROR),
 							Toast.LENGTH_LONG).show();
 				default:
 					Log.d(MainActivity.TAG, "Unknown result state");

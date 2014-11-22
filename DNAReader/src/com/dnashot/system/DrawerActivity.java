@@ -9,11 +9,11 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.dnareader.v0.R;
 import com.dnashot.activities.InfoActivity;
 import com.dnashot.activities.SettingsActivity;
 import com.dnashot.activities.TakePictureActivity;
 import com.dnashot.activities.UploadPictureActivity;
+import com.dnashot.v0.R;
 
 @SuppressLint("InflateParams")
 public class DrawerActivity extends Activity implements

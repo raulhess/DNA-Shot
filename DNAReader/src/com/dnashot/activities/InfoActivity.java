@@ -1,10 +1,10 @@
 package com.dnashot.activities;
 
-import com.dnareader.v0.R;
-import com.dnashot.system.DrawerActivity;
-
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+
+import com.dnashot.system.DrawerActivity;
+import com.dnashot.v0.R;
 
 public class InfoActivity extends DrawerActivity {
 

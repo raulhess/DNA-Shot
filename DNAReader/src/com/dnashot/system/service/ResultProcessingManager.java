@@ -41,7 +41,7 @@ public class ResultProcessingManager implements Runnable{
 	public static void resumeProcessing(List<Result> resultList, Context context){
 		Log.d(MainActivity.TAG, "Resuming incomplete results");
 		for (Result result : resultList) {
-			if (result.getState() != Result.DONE && result.getState() != Result.ERROR)
+			if (result.getState() != Result.DONE && result.getState() != Result.ERROR && result.getState() != Result.ERROR_OCR)
 				handler.post(new LoopThread(context, result));
 		}	
 		
