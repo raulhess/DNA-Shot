@@ -221,6 +221,7 @@ public class ResultManager {
 		try {
 			if (isExternalStorageReadable()) {
 				final BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inSampleSize = adjust;
 
 				boolean done = false;
 				int downsampleBy = adjust;

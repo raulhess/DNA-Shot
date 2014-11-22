@@ -35,8 +35,7 @@ public class TakePictureActivity extends DrawerActivity {
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			try {
-				ResultProcessingManager manager = new ResultProcessingManager(getApplicationContext());
-				manager.startProcessing(data);
+				ResultProcessingManager.startProcessing(data,getApplicationContext());
 				pictureTaken();				
 			} catch (Exception e) {
 				e.printStackTrace();

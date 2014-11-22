@@ -22,69 +22,72 @@ import com.dnashot.activities.MainActivity;
 import com.dnashot.activities.ResultActivity;
 import com.dnashot.data.Result;
 import com.dnashot.processing.Blast;
+import com.dnashot.processing.Ocr;
 import com.dnashot.processing.PreProcessing;
 import com.dnashot.system.ResultManager;
 import com.googlecode.leptonica.android.Pix;
 
 public class LoopThread implements Runnable {
 
-	public static final int RELOAD_GUI = 1;
-
 	Context context;
+	Result result;
+	
+	Ocr ocr;
+	Blast blast;
 
-	public LoopThread(Context context) {
+	public LoopThread(Context context, Result result) {
 		this.context = context;
+		this.result = result;
 	}
 
 	@Override
 	public void run() {
-		Log.d(MainActivity.TAG, "Checking results");
+		Log.d(MainActivity.TAG, "Checking result");
 		ConnectivityManager connMgr = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		Handler handler = MainActivity.handler;
-		handler.sendEmptyMessage(RELOAD_GUI);
-
-		boolean done = true;
-
+		handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
+		
+		boolean done = true;	
+		
 		do {
-			done = true;
-			Log.d(MainActivity.TAG, "Looping...");
+			done = true;			
 			try {
-				for (Result r : MainActivity.listResults) {
-					int position = MainActivity.listResults.indexOf(r);
-					if (r.getState() != Result.DONE
-							&& r.getState() != Result.ERROR) {
+				
+					int position = MainActivity.listResults.indexOf(result);
+					if (result.getState() != Result.DONE
+							&& result.getState() != Result.ERROR) {
 						done = false;
 					}
 
-					Log.d(MainActivity.TAG, "Trying: " + r.getId() + " State:"
-							+ r.getState());
+					Log.d(MainActivity.TAG, "Trying: " + result.getId() + " State:"
+							+ result.getState());
 
-					switch (r.getState()) {
+					switch (result.getState()) {
 
 					case Result.UNPROCESSED:
 					case Result.PREPROCESSING_STARTED:
 
-						r.setState(Result.PREPROCESSING_STARTED);
-						handler.sendEmptyMessage(RELOAD_GUI);
+						result.setState(Result.PREPROCESSING_STARTED);
+						handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 
 						PreProcessing p = new PreProcessing();
 						Bitmap fullImage = null;
 						try {
 							fullImage = ResultManager.loadFullImage(context,
-									r.getLongId(), 1);
+									result.getLongId(), 1);
 							Pix threshold = p
 									.adaptativeThreshold(bitmapToByteArray(fullImage));
 							byte[] deskew = p.deskew(threshold);
-							r.setPreProcessedimage(BitmapFactory
+							result.setPreProcessedimage(BitmapFactory
 									.decodeByteArray(deskew, 0, deskew.length));
 
-							r.setState(Result.PREPROCESSING_FINISHED);
-							ResultManager.updateResultState(context, r);
-							ResultManager.savePreImage(context, r.getLongId(),
-									r.getPreProcessedimage());
-							handler.sendEmptyMessage(RELOAD_GUI);
+							result.setState(Result.PREPROCESSING_FINISHED);
+							ResultManager.updateResultState(context, result);
+							ResultManager.savePreImage(context, result.getLongId(),
+									result.getPreProcessedimage());
+							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 						} catch (OutOfMemoryError e) {
 							e.printStackTrace();
 						}
@@ -93,25 +96,28 @@ public class LoopThread implements Runnable {
 					case Result.PREPROCESSING_FINISHED:
 					case Result.OCR_STARTED:
 
-						r.setState(Result.OCR_STARTED);
-						handler.sendEmptyMessage(RELOAD_GUI);
+						if (ocr == null)
+							ocr = new Ocr(context);
+
+						result.setState(Result.OCR_STARTED);
+						handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 						Bitmap preImage = null;
 						try {
 							preImage = ResultManager.loadPreImage(context,
-									r.getLongId(), 1);
-							String text = MainActivity.ocr
+									result.getLongId(), 1);
+							String text = ocr
 									.doOcr(bitmapToByteArray(preImage));
 							if (text.length() > 20) {
-								r.setOcrText(text);
-								r.setState(Result.OCR_FINISHED);
-								ResultManager.updateResult(context, r);
+								result.setOcrText(text);
+								result.setState(Result.OCR_FINISHED);
+								ResultManager.updateResult(context, result);
 								Log.d(MainActivity.TAG, "OCR Processed");
 							} else {
-								r.setState(Result.ERROR_OCR);
+								result.setState(Result.ERROR_OCR);
 							}
 
-							ResultManager.updateResultState(context, r);
-							handler.sendEmptyMessage(RELOAD_GUI);
+							ResultManager.updateResultState(context, result);
+							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 						} catch (OutOfMemoryError e) {
 							e.printStackTrace();
 						}
@@ -119,17 +125,19 @@ public class LoopThread implements Runnable {
 
 					case Result.OCR_FINISHED:
 
+						if (blast == null)
+							blast = new Blast();
+
 						if (networkInfo != null && networkInfo.isConnected()) {
 
-							String rid = MainActivity.blast.startBlast(r
-									.getOcrText());
-							r.setRid(rid);
-							r.setState(Result.BLAST_STARTED);
+							String rid = blast.startBlast(result.getOcrText());
+							result.setRid(rid);
+							result.setState(Result.BLAST_STARTED);
 							Log.d(MainActivity.TAG, "Blast request sent");
 
-							ResultManager.updateResult(context, r);
-							ResultManager.updateResultState(context, r);
-							handler.sendEmptyMessage(RELOAD_GUI);
+							ResultManager.updateResult(context, result);
+							ResultManager.updateResultState(context, result);
+							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 
 						} else {
 							Log.d(MainActivity.TAG,
@@ -141,29 +149,40 @@ public class LoopThread implements Runnable {
 
 					case Result.BLAST_STARTED:
 
+						if (blast == null)
+							blast = new Blast();
+
 						if (networkInfo != null && networkInfo.isConnected()) {
 							Log.d(MainActivity.TAG, "Checking Blast request");
 							Thread.sleep(5000);
-							String xml = MainActivity.blast.checkBlast(r
-									.getRid());
-
-							if (xml != null) {
-								Log.d(MainActivity.TAG, xml);
-								r.setBlastXML(xml);
-								r.setHits(Blast.parseBlastXML(xml));
-								r.setState(Result.DONE);
-								SharedPreferences settings = context
-										.getSharedPreferences(
-												MainActivity.SETTINGS_FILE, 0);
-								if (settings.getBoolean("notifications", false)) {
-									sendNotification(r, context, position);
+							try {
+								String xml = blast.checkBlast(result.getRid());
+								if (xml != null) {
+									Log.d(MainActivity.TAG, xml);
+									result.setBlastXML(xml);
+									result.setHits(Blast.parseBlastXML(xml));
+									result.setState(Result.DONE);
+									SharedPreferences settings = context
+											.getSharedPreferences(
+													MainActivity.SETTINGS_FILE,
+													0);
+									if (settings.getBoolean("notifications",
+											false)) {
+										sendNotification(result, context, position);
+									}
+									Log.d(MainActivity.TAG,
+											"Blast XML received");
+									ResultManager.updateResultState(context, result);
+									ResultManager.addHits(context, result);
 								}
-								Log.d(MainActivity.TAG, "Blast XML received");
-								ResultManager.updateResultState(context, r);
-								ResultManager.addHits(context, r);
+							} catch (Exception e) {
+								Log.d(MainActivity.TAG,
+										"Request id non existent, trying again");
+								result.setState(Result.OCR_FINISHED);
+								ResultManager.updateResultState(context, result);
 							}
 
-							handler.sendEmptyMessage(RELOAD_GUI);
+							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 
 						} else {
 							Log.d(MainActivity.TAG,
@@ -176,12 +195,13 @@ public class LoopThread implements Runnable {
 					default:
 						break;
 					}
-				}
+				
 
 			} catch (Exception e) {
 				Log.e(MainActivity.TAG,
 						"Error checking results: " + e.getMessage());
 				e.printStackTrace();
+				handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e1) {
@@ -196,21 +216,20 @@ public class LoopThread implements Runnable {
 		} while (!done && !MainActivity.listResults.isEmpty());
 
 	}
-
-	private static byte[] bitmapToByteArray(Bitmap bmp) {
+	
+	private static byte[] bitmapToByteArray(Bitmap bmp){
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+		bmp.compress(Bitmap.CompressFormat.PNG, 0, stream);
 		return stream.toByteArray();
 	}
-
-	private static void sendNotification(Result r, Context context, int position) {
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				context)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle("Result Ready")
-				.setContentText(
-						"You result with id = " + r.getLongId() + " is ready")
-				.setAutoCancel(true);
+	
+	private static void sendNotification(Result r, Context context, int position){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(context)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle("Result Ready")
+		        .setContentText("You result with id = " + r.getLongId() + " is ready")
+		        .setAutoCancel(true);
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(context, ResultActivity.class);
 		Bundle bundle = new Bundle();
@@ -218,8 +237,7 @@ public class LoopThread implements Runnable {
 		bundle.putInt("position", position);
 		resultIntent.putExtras(bundle);
 
-		// The stack builder object will contain an artificial back stack for
-		// the
+		// The stack builder object will contain an artificial back stack for the
 		// started Activity.
 		// This ensures that navigating backward from the Activity leads out of
 		// your application to the Home screen.
@@ -228,14 +246,16 @@ public class LoopThread implements Runnable {
 		stackBuilder.addParentStack(ResultActivity.class);
 		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
 		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) context
-				.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager mNotificationManager =
+		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(MainActivity.NOTIFICATION_ID,
-				mBuilder.build());
+		mNotificationManager.notify(MainActivity.NOTIFICATION_ID, mBuilder.build());
 	}
 
 }

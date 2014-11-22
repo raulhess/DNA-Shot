@@ -41,9 +41,9 @@ public class FragmentResultDebug extends Fragment {
 		Result target = MainActivity.listResults.get(resultId);
 
 		original = ResultManager.loadFullImage(getActivity(),
-				target.getLongId(), 4);
+				target.getLongId(), 8);
 		preProcessed = ResultManager.loadPreImage(getActivity(),
-				target.getLongId(), 4);
+				target.getLongId(), 8);
 
 		ocr = target.getOcrText();
 	}

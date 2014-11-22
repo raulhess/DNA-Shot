@@ -33,22 +33,21 @@ import android.widget.Toast;
 
 import com.dnareader.v0.R;
 import com.dnashot.data.Result;
-import com.dnashot.processing.Blast;
-import com.dnashot.processing.Ocr;
 import com.dnashot.system.DrawerActivity;
 import com.dnashot.system.ResultManager;
 import com.dnashot.system.ResultsAdapter;
-import com.dnashot.system.service.LoopThread;
 import com.dnashot.system.service.ResultProcessingManager;
 
 @SuppressLint("InflateParams")
 public class MainActivity extends DrawerActivity {
 	public static final String TAG = "DNAReader";
 	public static final String SETTINGS_FILE = "dna-reader-preferences";
-	public static final int NOTIFICATION_ID = 1;
+	public static final int NOTIFICATION_ID = 1;		
 	private static final int SELECT_PICTURE = 1;
-	private String selectedImagePath;
-
+	public static final int RELOAD_GUI = 1;		
+	
+	private String selectedImagePath;	
+	
 	public static Typeface caviarDreams;
 	private ActionBarDrawerToggle drawerToggle;
 
@@ -60,12 +59,8 @@ public class MainActivity extends DrawerActivity {
 	private ListView results;
 	private ResultsAdapter adapter;
 
-	public static Ocr ocr;
-	public static Blast blast;
-
 	public static Handler handler;
-	static Runnable checkResultsLoop;
-	public static Thread thread;
+	public static Thread processingThread;
 
 	private DeleteResultDialogFragment deleteFragment;
 
@@ -98,7 +93,7 @@ public class MainActivity extends DrawerActivity {
 
 		};
 		drawerLayout.setDrawerListener(drawerToggle);
-
+		
 		// instantiates the main menu views
 		// lastResultsList = (ListView) findViewById(R.id.menu_last_results);
 		takePicture = (TextView) findViewById(R.id.menu_take_picture);
@@ -112,9 +107,8 @@ public class MainActivity extends DrawerActivity {
 
 		// creates the results list view
 		results = (ListView) findViewById(R.id.menu_result_list);
-		if (listResults == null)
-			listResults = new ArrayList<Result>();
-		Log.d(TAG, "List state " + listResults.size());
+	
+		listResults = new ArrayList<Result>();
 		adapter = new ResultsAdapter(this, listResults);
 		results.setAdapter(adapter);
 		results.setOnItemClickListener(new OnItemClickListener() {
@@ -131,6 +125,11 @@ public class MainActivity extends DrawerActivity {
 							getResources().getString(R.string.warning_not_sent),
 							Toast.LENGTH_LONG).show();
 					break;
+				case 1:
+					Toast.makeText(getApplicationContext(),
+							getResources().getString(R.string.warning_waiting),
+							Toast.LENGTH_SHORT).show();
+					break;
 				case Result.DONE:
 					Intent it = new Intent(getApplicationContext(),
 							ResultActivity.class);
@@ -140,12 +139,6 @@ public class MainActivity extends DrawerActivity {
 					it.putExtras(bundle);
 					startActivity(it);
 					break;
-				case Result.ERROR_OCR:
-					Toast.makeText(
-							getApplicationContext(),
-							getResources()
-									.getString(R.string.warning_ocr_error),
-							Toast.LENGTH_LONG).show();
 				default:
 					Log.d(MainActivity.TAG, "Unknown result state");
 					break;
@@ -153,6 +146,7 @@ public class MainActivity extends DrawerActivity {
 			}
 
 		});
+		
 		final Activity caller = this;
 		results.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -167,21 +161,17 @@ public class MainActivity extends DrawerActivity {
 				return false;
 			}
 		});
-
-		if (checkResultsLoop == null)
-			checkResultsLoop = new LoopThread(getApplicationContext());
-		if (ocr == null)
-			ocr = new Ocr(getApplicationContext());
-		if (blast == null)
-			blast = new Blast();
+		
 		if (handler == null)
-			handler = new ThreadHandler();
-
-		startThread();
+			handler = new ThreadHandler();		
+		
 		listResults = receivedListResults;
-		if (listResults == null) {
-			load();
+		if(listResults == null){
+			load();	
 		}
+		
+		startThread();
+		
 	}
 
 	public void goTakePicture(View v) {
@@ -214,14 +204,15 @@ public class MainActivity extends DrawerActivity {
 					// THIS BECAUSE DROPBOX DOWNLOAD THE IMAGE
 					// IN THIS FORM -
 					// file:///storage/emulated/0/Android/data/com.dropbox.android/...
-					System.out.println("local image:" + selectedImagePath);
-
-					ResultProcessingManager manager = new ResultProcessingManager(
-							getApplicationContext());
-					Bitmap bitmap = ResultManager.loadImage(selectedImagePath,
-							1, false);
-					manager.startProcessing(bitmap);
-
+					System.out.println("local image:" + selectedImagePath);							
+					
+					new Thread(new Runnable() {					
+						public void run() {							
+							Bitmap bitmap = ResultManager.loadImage(selectedImagePath, 1,false);
+							ResultProcessingManager.startProcessing(bitmap,getApplicationContext());
+						}
+					}).start();
+					
 				} else {
 					System.out.println("picasa/dropbox image!");
 					loadPicasaImageFromGallery(selectedImageUri);
@@ -229,8 +220,7 @@ public class MainActivity extends DrawerActivity {
 			}
 		}
 	}
-
-	// NEW METHOD FOR PICASA IMAGE LOAD
+	
 	private void loadPicasaImageFromGallery(final Uri uri) {
 		String[] projection = { MediaColumns.DATA, MediaColumns.DISPLAY_NAME };
 		Cursor cursor = getContentResolver().query(uri, projection, null, null,
@@ -249,10 +239,7 @@ public class MainActivity extends DrawerActivity {
 							Bitmap bitmap = android.provider.MediaStore.Images.Media
 									.getBitmap(getContentResolver(), uri);
 							// THIS IS THE BITMAP IMAGE WE ARE LOOKING FOR.
-							ResultProcessingManager manager = new ResultProcessingManager(
-									getApplicationContext());
-							manager.startProcessing(ResultManager.adjustImage(
-									bitmap, 1));
+							ResultProcessingManager.startProcessing(ResultManager.adjustImage(bitmap,1),getApplicationContext());
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
@@ -288,15 +275,18 @@ public class MainActivity extends DrawerActivity {
 		}
 	}
 
-	public static void startThread() {
-		if ((thread == null) || (thread.getState() == Thread.State.TERMINATED)) {
-			thread = new Thread(checkResultsLoop);
-			handler.postDelayed(new Runnable() {
+	public void startThread() {
+		if ((processingThread == null) || (processingThread.getState() == Thread.State.TERMINATED)) {
+			processingThread =  new Thread(new ResultProcessingManager());
+			Log.d(TAG, "Starting processing thread");
+			processingThread.start();
+			handler.postDelayed(new Runnable() {				
+				@Override
 				public void run() {
-					Log.d(TAG, "Restarting thread");
-					thread.start();
+					ResultProcessingManager.resumeProcessing(listResults, getApplicationContext());					
 				}
-			}, 5000);
+			}, 2000);
+			
 		}
 	}
 
@@ -317,8 +307,8 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (thread != null)
-			thread.interrupt();
+		if (processingThread != null)
+			processingThread.interrupt();
 	}
 
 	@Override
@@ -367,8 +357,8 @@ public class MainActivity extends DrawerActivity {
 											.clearResults(getApplicationContext());
 									load();
 									updateGUI();
-									if (thread != null)
-										thread.interrupt();
+									if (processingThread != null)
+										processingThread.interrupt();
 								}
 							})
 					.setNegativeButton(R.string.cancel,
@@ -398,12 +388,11 @@ public class MainActivity extends DrawerActivity {
 
 			switch (msg.what) {
 
-			case LoopThread.RELOAD_GUI:
+			case RELOAD_GUI:
 				updateGUI();
 				break;
 			}
 		}
 
 	}
-
 }

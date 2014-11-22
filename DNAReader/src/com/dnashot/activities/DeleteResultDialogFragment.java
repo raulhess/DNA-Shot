@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.dnareader.v0.R;
 import com.dnashot.system.ResultManager;
@@ -33,8 +32,8 @@ public class DeleteResultDialogFragment extends DialogFragment {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int id) {
-								if (MainActivity.thread != null)
-									MainActivity.thread.interrupt();
+								if (MainActivity.processingThread != null)
+									MainActivity.processingThread.interrupt();
 								ResultManager.deleteResult(activity, resultId);
 								MainActivity.listResults.remove(resultPosition);
 								if(close) activity.finish();
