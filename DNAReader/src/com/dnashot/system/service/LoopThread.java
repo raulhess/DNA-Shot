@@ -84,6 +84,8 @@ public class LoopThread implements Runnable {
 							ResultManager.savePreImage(context,result.getLongId(),(BitmapFactory.decodeByteArray(deskew, 0, deskew.length)));
 							result.setState(Result.PREPROCESSING_FINISHED);
 							ResultManager.updateResultState(context, result);
+							fullImage.recycle();
+							fullImage = null;
 													
 							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
 						} catch (OutOfMemoryError e) {
@@ -116,6 +118,8 @@ public class LoopThread implements Runnable {
 
 							ResultManager.updateResultState(context, result);
 							handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
+							preImage.recycle();
+							preImage = null;
 						} catch (OutOfMemoryError e) {
 							e.printStackTrace();
 						}
