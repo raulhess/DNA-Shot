@@ -36,6 +36,8 @@ public class DeleteResultDialogFragment extends DialogFragment {
 									MainActivity.processingThread.interrupt();
 								ResultManager.deleteResult(activity, resultId);
 								MainActivity.listResults.remove(resultPosition);
+								MainActivity.handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
+								MainActivity.handler.sendEmptyMessage(MainActivity.RELOAD_THREAD);	
 								if(close) activity.finish();
 							}
 						})

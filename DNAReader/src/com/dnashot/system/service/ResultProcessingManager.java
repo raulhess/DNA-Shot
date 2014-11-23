@@ -33,6 +33,7 @@ public class ResultProcessingManager implements Runnable{
 		
 		MainActivity.listResults.add(0, r);		
 		MainActivity.handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
+		MainActivity.handler.sendEmptyMessage(MainActivity.RELOAD_THREAD);
 		handler.post(new LoopThread(context, r));
 	}
 	

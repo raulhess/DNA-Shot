@@ -44,7 +44,7 @@
     <string name="help_navigation_img">Navigation Image</string>
     <string name="capture">CAPTURE</string>
     <string name="title_activity_take_picture">Capture Picture</string>
-    <string name="title_activity_upload_picture">Load Picture</string>
+    <string name="title_activity_upload_picture">Upload Picture</string>
     <string name="title_activity_results">Results</string>
     <string name="title_activity_info">Info</string>
     <string name="title_activity_settings">Settings</string>
