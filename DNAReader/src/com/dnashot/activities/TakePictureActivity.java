@@ -50,9 +50,17 @@ public class TakePictureActivity extends DrawerActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		            WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		//getActionBar().setDisplayHomeAsUpEnabled(true);		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);			
 		setContentView(R.layout.activity_take_picture);
+		Typeface caviarDreams = Typeface.createFromAsset(getAssets(),
+				"fonts/CaviarDreams.ttf");
+		buttonTakePicture = (Button) findViewById(R.id.button_take_picture);
+		buttonTakePicture.setTypeface(caviarDreams);
+		createDrawerList();
+	}
+	
+	private void startCamera(){
+		
 		mainFrameLayout = (FrameLayout) findViewById(R.id.main_frame_layout);
 		if (!checkCameraHardware(this)) {
 			TextView content = new TextView(getApplicationContext());
@@ -69,11 +77,7 @@ public class TakePictureActivity extends DrawerActivity {
 				mainFrameLayout.addView(cameraPreview);
 			}
 		}
-		Typeface caviarDreams = Typeface.createFromAsset(getAssets(),
-				"fonts/CaviarDreams.ttf");
-		buttonTakePicture = (Button) findViewById(R.id.button_take_picture);
-		buttonTakePicture.setTypeface(caviarDreams);
-		createDrawerList();
+		
 	}
 
 	private boolean checkCameraHardware(Context context) {
@@ -105,28 +109,31 @@ public class TakePictureActivity extends DrawerActivity {
 				"Processando Foto", true);
 		buttonTakePicture.setEnabled(false);
 		camera.autoFocus(new AutoFocusCallback() {
-
 			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				camera.takePicture(null, null, picture);
 			}
-		});
-		//
+		});		
 	}
 
 	public void pictureTaken() {
 		mProgressDialogue.dismiss();
 		this.finish();
-//		buttonTakePicture.setEnabled(true);
-//		cameraPreview.startPreview();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		cameraPreview.releaseCamera();
+		mainFrameLayout.removeView(cameraPreview);
 	}
-
+		
+	@Override
+	protected void onResume() {		
+		super.onResume();	
+		startCamera();
+	}
+	
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
