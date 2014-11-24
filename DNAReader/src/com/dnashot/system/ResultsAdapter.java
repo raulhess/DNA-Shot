@@ -125,10 +125,23 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
 					+ context.getResources().getString(R.string.ERROR_OCR));
 			ocrIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.eye_error));
 			ocrIcon.setAlpha(1F);
+			dnaIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.dna_off));
+			dnaIcon.setAlpha(1F);
+			cellView.setBackgroundColor(context.getResources().getColor(
+					R.color.app_soft_red));
+			break;
+		
+		
+		case Result.ERROR_BLAST:
+			status.setText("Status: "
+					+ context.getResources().getString(R.string.ERROR_BLAST));
+			ocrIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.eye_on));
+			ocrIcon.setAlpha(1F);
 			dnaIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.dna_error));
 			dnaIcon.setAlpha(1F);
 			cellView.setBackgroundColor(context.getResources().getColor(
 					R.color.app_soft_red));
+			break;
 		}
 
 		return cellView;

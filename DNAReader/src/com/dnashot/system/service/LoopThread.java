@@ -48,6 +48,7 @@ public class LoopThread implements Runnable {
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		Handler handler = MainActivity.handler;
 		handler.sendEmptyMessage(MainActivity.RELOAD_GUI);
+		int blastTries = 0;
 		
 		boolean done = true;	
 		
@@ -57,7 +58,7 @@ public class LoopThread implements Runnable {
 				
 					int position = MainActivity.listResults.indexOf(result);
 					if (result.getState() != Result.DONE
-							&& result.getState() != Result.ERROR && result.getState() != Result.ERROR_OCR) {
+							&& result.getState() != Result.ERROR && result.getState() != Result.ERROR_OCR && result.getState() != Result.ERROR_BLAST) {
 						done = false;
 					}
 
@@ -155,8 +156,8 @@ public class LoopThread implements Runnable {
 							blast = new Blast();
 
 						if (networkInfo != null && networkInfo.isConnected()) {
-							Log.d(MainActivity.TAG, "Checking Blast request");
-							Thread.sleep(5000);
+							Log.d(MainActivity.TAG, "Checking Blast request, tries:" + blastTries);
+							Thread.sleep(6000);
 							try {
 								String xml = blast.checkBlast(result.getRid());
 								if (xml != null) {
@@ -176,6 +177,14 @@ public class LoopThread implements Runnable {
 											"Blast XML received");
 									ResultManager.updateResultState(context, result);
 									ResultManager.addHits(context, result);
+								}else{
+									if (blastTries > 10){
+										Log.d(MainActivity.TAG,
+												"Blast isn't responding");
+										result.setState(Result.ERROR_BLAST);
+										ResultManager.updateResultState(context, result);
+									}
+									blastTries++;									
 								}
 							} catch (Exception e) {
 								Log.d(MainActivity.TAG,

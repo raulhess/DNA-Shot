@@ -82,6 +82,7 @@
     <string name="DONE">Done</string>
     <string name="ERROR">A processing error occurred</string>
     <string name="ERROR_OCR">An OCR error has occurred</string>    
+    <string name="ERROR_BLAST">BLAST database is not responding</string>    
     
     <string name="warning_not_sent">The selected item not initialized yet</string>
     <string name="warning_waiting">The selected item is being processed</string>
