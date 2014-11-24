@@ -7,6 +7,7 @@
 
     <color name="app_blue">#1ED4C8</color>
     <color name="app_black">#000000</color>
+    <color name="app_bg_blue">#347FB9</color>
     <color name="app_bright_blue">#1ED4C0</color>
     <color name="app_dark_blue">#18ABA1</color>
     <color name="app_light_blue">#64DED6</color>
@@ -32,8 +33,6 @@
     <string name="menu_settings">SETTINGS</string>
     <string name="menu_info">INFORMATION</string>
     <string name="menu_content_title">Welcome!</string>
-    <string name="about_title">About:</string>    
-    <string name="about">DNA Reader is an app developed by students of Federal University of Paraná, with the intent of recognize DNA sequences from photos.</string>
 	<string name="menu_pictures_title">Send a picture</string>
 	<string name="menu_results_title">Last results</string>
 	<string name="menu_results_more">MORE RESULTS</string>
@@ -88,7 +87,20 @@
     <string name="warning_waiting">The selected item is being processed</string>
     <string name="warning_ocr_error">It was not possible to identify a valid DNA sequence from the image</string>
 
-
+    <string name="info_about_title">What is DNA Shot?</string>
+    <string name="info_about">DNA Shot is an app developed by students of the Federal University of Paraná, with the goal of recognizing DNA sequences from pictures</string>
+    <string name="info_how_title">How do I use it?</string>
+    <string name="info_how">You can send a picture either from your camera or your gallery, and the app will do the work. An internet connection is required to finish the search. If you checked the send notification option on the settings page, a notification will be sent once the result is ready.</string>
+	<string name="info_icons_title">What do the icons mean?</string>
+	<string name="info_icon_eye_on">OCR Finished</string>
+	<string name="info_icon_eye_off">OCR in Process</string>
+	<string name="info_icon_eye_error">OCR Error</string>
+	<string name="info_icon_dna_on">BLAST Finished</string>
+	<string name="info_icon_dna_off">BLAST Search in Progress</string>
+	<string name="info_icon_dna_error">BLAST Error</string>
+	<string name="info_delete_title">How can I delete a result?</string>
+	<string name="info_delete">You can delete a result by clicking on it and keep pressing. This will trigger a delete dialog. You can also delete a result while viewing it through the menu. In the main screen, you can also delete all result. Notice all these actions can\'t be undone.</string>
+    
     <string-array name="array_language">
         <item> English</item>        
     </string-array>
