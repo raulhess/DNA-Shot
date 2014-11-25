@@ -178,7 +178,7 @@ public class LoopThread implements Runnable {
 									ResultManager.updateResultState(context, result);
 									ResultManager.addHits(context, result);
 								}else{
-									if (blastTries > 10){
+									if (blastTries > 50){
 										Log.d(MainActivity.TAG,
 												"Blast isn't responding");
 										result.setState(Result.ERROR_BLAST);
